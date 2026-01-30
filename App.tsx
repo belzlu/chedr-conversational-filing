@@ -1,15 +1,15 @@
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { TaxData, INITIAL_TAX_DATA, Message, ProcessedDocument, FilingStep, ChipAction } from './types';
 import { sendMessageToGemini } from './services/geminiService';
+import { useVaultPersistence } from './services/vaultStorage';
 import { ChatPanel, LoadingStage } from './components/ChatPanel';
 import { LiveModelPanel } from './components/LiveModelPanel';
 import { Drawer } from './components/Drawer';
 import { Sidebar } from './components/Sidebar';
 import { MaterialShell, SurfaceOpaque } from './components/Material';
 import { PlaidSelector } from './components/PlaidSelector';
-// Added IconCheck to imports to resolve "Cannot find name 'IconCheck'" error
-import { IconUpload, IconBank, IconHistory, IconFile, IconCheck } from './components/Icons';
+import { DocumentVault } from './components/vault';
 
 // Golden Ticket: Step 0 - Landing
 const WELCOME_MESSAGE: Message = {
@@ -26,20 +26,59 @@ const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [taxData, setTaxData] = useState<TaxData>(INITIAL_TAX_DATA);
   const [history, setHistory] = useState<TaxData[]>([]);
-  
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
   const [activeView, setActiveView] = useState('chat');
-  
+
   // Phase 1 Onboarding State + Phase 2 Review + Phase 3 Final
   type OnboardingPhase = 'landing' | 'phone' | 'identity' | 'bank' | 'dashboard' | 'review' | 'final';
   const [onboardingPhase, setOnboardingPhase] = useState<OnboardingPhase>('landing');
-  
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isPlaidOpen, setIsPlaidOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState<LoadingStage>(null);
   const [sidebarState, setSidebarState] = useState<'rail' | 'expanded'>('expanded');
   const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
-  const [isModelVisible, setIsModelVisible] = useState(false); 
+  const [isModelVisible, setIsModelVisible] = useState(false);
+
+  // Persistence hooks
+  const { loadTaxData, persistTaxData, loadDocuments, persistDocuments } = useVaultPersistence();
+
+  // Load persisted data on mount
+  useEffect(() => {
+    const loadPersistedData = async () => {
+      try {
+        const storedTaxData = await loadTaxData();
+        if (storedTaxData) {
+          setTaxData(storedTaxData);
+          // If user had documents, skip to dashboard phase
+          if (storedTaxData.vault && storedTaxData.vault.length > 0) {
+            setOnboardingPhase('dashboard');
+            setIsModelVisible(true);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load persisted data:', error);
+      } finally {
+        setIsDataLoaded(true);
+      }
+    };
+    loadPersistedData();
+  }, []);
+
+  // Persist tax data on changes (debounced)
+  useEffect(() => {
+    if (!isDataLoaded) return;
+
+    const timeoutId = setTimeout(() => {
+      persistTaxData(taxData).catch(error => {
+        console.error('Failed to persist tax data:', error);
+      });
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [taxData, isDataLoaded, persistTaxData]);
 
   const saveToHistory = useCallback((current: TaxData) => {
     setHistory(prev => [...prev.slice(-10), current]);
@@ -353,42 +392,21 @@ const App: React.FC = () => {
       }, 2000);
   };
 
-  const renderVault = () => (
-    <div className="h-full flex flex-col p-8 overflow-y-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Document Vault</h2>
-        <button onClick={() => setIsDrawerOpen(true)} className="px-4 py-2 bg-accent/20 border border-accent/30 rounded-xl text-accent text-xs font-bold hover:bg-accent/30 transition-all flex items-center gap-2">
-          <IconUpload className="w-4 h-4" /> Add File
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {taxData.vault.map(doc => (
-          <div key={doc.id} onClick={() => { setActiveView('chat'); setIsModelVisible(true); }} className="p-4 bg-white/[0.03] border border-white/10 rounded-2xl hover:border-white/20 transition-all cursor-pointer group">
-             <div className="flex items-center gap-3 mb-4">
-               <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/30 group-hover:text-accent transition-colors">
-                 <IconFile className="w-5 h-5" />
-               </div>
-               <div className="min-w-0">
-                 <p className="text-sm font-bold text-white truncate">{doc.name}</p>
-                 <p className="text-[10px] text-white/30 uppercase tracking-widest">{doc.sourceType} • {doc.taxYear}</p>
-               </div>
-             </div>
-             <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                <span className="text-[10px] font-black text-white/10 uppercase tracking-widest">{doc.dataPointCount} Fields</span>
-                <span className="text-[10px] font-bold text-ok/60 flex items-center gap-1"><IconCheck className="w-3 h-3" /> Verified</span>
-             </div>
-          </div>
-        ))}
-        {taxData.vault.length === 0 && (
-          <div className="col-span-full py-24 flex flex-col items-center justify-center text-white/5 italic">
-            <IconFile className="w-16 h-16 mb-4 opacity-20" />
-            <p className="text-lg font-medium">Vault is currently empty</p>
-            <p className="text-sm mt-2">Upload a prior return or connect Plaid to begin.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  const handleVaultDocumentProcessed = useCallback((doc: ProcessedDocument) => {
+    saveToHistory(taxData);
+    setTaxData(prev => ({
+      ...prev,
+      vault: [...prev.vault, doc],
+      docsReceived: prev.docsReceived + 1
+    }));
+  }, [taxData, saveToHistory]);
+
+  const handleVaultDocumentSelect = useCallback((doc: ProcessedDocument | null) => {
+    if (doc) {
+      setActiveView('chat');
+      setIsModelVisible(true);
+    }
+  }, []);
 
   const renderDashboard = () => (
     <div className="h-full flex flex-col p-8 overflow-y-auto space-y-8">
@@ -628,7 +646,13 @@ const App: React.FC = () => {
             isModelVisible={isModelVisible}
           />
         )}
-        {activeView === 'vault' && renderVault()}
+        {activeView === 'vault' && (
+          <DocumentVault
+            initialDocuments={taxData.vault}
+            onDocumentSelect={handleVaultDocumentSelect}
+            onDocumentProcessed={handleVaultDocumentProcessed}
+          />
+        )}
         {activeView === 'dashboard' && renderDashboard()}
         {activeView === 'profile' && <div className="p-10 flex items-center justify-center h-full text-white/20 italic">Profile management module loading...</div>}
         {activeView === 'settings' && <div className="p-10 flex items-center justify-center h-full text-white/20 italic">Settings configuration loading...</div>}
