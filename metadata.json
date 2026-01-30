@@ -1,0 +1,7 @@
+{
+  "name": "Chedr - Conversational Filing - v2",
+  "description": "A high-fidelity, dark-mode tax filing assistant featuring a split-screen interface with a conversational chat agent on the left and a live-updating data model on the right.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
