@@ -88,7 +88,7 @@ const DocumentVaultInner: React.FC<{
         processed++;
         setUploadProgress(Math.round((processed / totalFiles) * 100));
       } catch (error) {
-        console.error('Error processing file:', file.name, error);
+        console.error('Error processing document upload');
       }
     }
 

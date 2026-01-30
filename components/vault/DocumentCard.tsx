@@ -3,6 +3,11 @@ import { ProcessedDocument, VerificationStatus } from '../../types';
 import { IconFile, IconBank, IconCheck, IconAlert, IconInfo } from '../Icons';
 import { LiquidGlass } from '../Material';
 
+const isSafeImageUrl = (url: string | undefined): boolean => {
+  if (!url) return false;
+  return url.startsWith('data:image/') || url.startsWith('https://') || url.startsWith('blob:');
+};
+
 interface DocumentCardProps {
   document: ProcessedDocument;
   onClick?: () => void;
@@ -92,7 +97,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
       <div className="flex items-start gap-3">
         {/* Document Icon/Thumbnail */}
         <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center shrink-0 overflow-hidden">
-          {document.thumbnailUrl ? (
+          {isSafeImageUrl(document.thumbnailUrl) ? (
             <img
               src={document.thumbnailUrl}
               alt=""

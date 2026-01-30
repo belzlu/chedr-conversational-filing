@@ -44,7 +44,16 @@ export const FieldEditor: React.FC<FieldEditorProps> = ({
   const formatValue = (val: string): string => {
     if (type === 'currency') {
       // Strip non-numeric except decimal
-      const numeric = val.replace(/[^0-9.]/g, '');
+      let numeric = val.replace(/[^0-9.]/g, '');
+      // Prevent multiple decimal points
+      const parts = numeric.split('.');
+      if (parts.length > 2) {
+        numeric = parts[0] + '.' + parts.slice(1).join('');
+      }
+      // Limit decimal places to 2
+      if (parts[1]?.length > 2) {
+        numeric = parts[0] + '.' + parts[1].slice(0, 2);
+      }
       return numeric;
     }
     return val;

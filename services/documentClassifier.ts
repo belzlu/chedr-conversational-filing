@@ -34,7 +34,7 @@ export function classifyDocument(filename: string): ClassificationResult {
 }
 
 export function generateDocumentId(): string {
-  return `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return crypto.randomUUID();
 }
 
 export function getFileSize(bytes: number): string {

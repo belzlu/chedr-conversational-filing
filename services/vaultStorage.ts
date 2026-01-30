@@ -86,8 +86,8 @@ class LocalStorageVaultStorage implements VaultStorageInterface {
     try {
       const parsed = JSON.parse(stored) as ProcessedDocument[];
       return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error('Failed to parse stored documents:', error);
+    } catch {
+      console.error('Failed to parse stored documents');
       return [];
     }
   }
@@ -142,8 +142,8 @@ class LocalStorageVaultStorage implements VaultStorageInterface {
       // Rehydrate vault from separate storage
       const vault = await this.getDocuments();
       return { ...parsed, vault };
-    } catch (error) {
-      console.error('Failed to parse stored tax data:', error);
+    } catch {
+      console.error('Failed to parse stored tax data');
       return null;
     }
   }

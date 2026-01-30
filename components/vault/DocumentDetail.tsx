@@ -1,13 +1,18 @@
 import React from 'react';
-import { ProcessedDocument, ExtractedField } from '../../types';
+import { ProcessedDocument, ExtractedField, FieldValue } from '../../types';
 import { LineageCanvas } from './lineage';
 import { IconClose, IconFile, IconCheck, IconAlert, IconInfo } from '../Icons';
 import { LiquidGlass } from '../Material';
 
+const isSafeImageUrl = (url: string | undefined): boolean => {
+  if (!url) return false;
+  return url.startsWith('data:image/') || url.startsWith('https://') || url.startsWith('blob:');
+};
+
 interface DocumentDetailProps {
   document: ProcessedDocument;
   onClose: () => void;
-  onFieldEdit?: (fieldId: string, newValue: any) => void;
+  onFieldEdit?: (fieldId: string, newValue: FieldValue) => void;
 }
 
 const getStatusIcon = (status: string) => {
@@ -34,7 +39,7 @@ export const DocumentDetail: React.FC<DocumentDetailProps> = ({
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-            {document.thumbnailUrl ? (
+            {isSafeImageUrl(document.thumbnailUrl) ? (
               <img
                 src={document.thumbnailUrl}
                 alt=""

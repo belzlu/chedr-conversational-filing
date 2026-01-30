@@ -1,8 +1,9 @@
+export type FieldValue = string | number | boolean | null;
 
 export interface ExtractedField {
   id: string;
   label: string;
-  value: any;
+  value: FieldValue;
   confidence: number;
   status: 'PASS' | 'WARN' | 'FAIL';
   mapping?: string;
