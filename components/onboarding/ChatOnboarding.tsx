@@ -122,7 +122,7 @@ export const ChatOnboarding: React.FC<ChatOnboardingProps> = ({
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
-      setMessages(prev => [...prev, { id: Date.now().toString(), text, sender: 'chedr' }]);
+      setMessages(prev => [...prev, { id: crypto.randomUUID(), text, sender: 'chedr' }]);
     }, 500);
   }, []);
 
@@ -133,7 +133,7 @@ export const ChatOnboarding: React.FC<ChatOnboardingProps> = ({
 
     // Add user's phone as a message
     const formatted = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '+1 ($1) $2-$3');
-    setMessages(prev => [...prev, { id: Date.now().toString(), text: formatted, sender: 'user' }]);
+    setMessages(prev => [...prev, { id: crypto.randomUUID(), text: formatted, sender: 'user' }]);
 
     try {
       // If custom verification handler provided, use it
@@ -164,7 +164,7 @@ export const ChatOnboarding: React.FC<ChatOnboardingProps> = ({
   const handleCodeSubmit = useCallback(async (code: string) => {
     setError(null);
     setFlowState('verifying-code');
-    setMessages(prev => [...prev, { id: Date.now().toString(), text: '••••••', sender: 'user' }]);
+    setMessages(prev => [...prev, { id: crypto.randomUUID(), text: '••••••', sender: 'user' }]);
 
     try {
       // If custom verification handler provided, use it

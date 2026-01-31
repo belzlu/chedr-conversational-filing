@@ -102,12 +102,26 @@ export const PlaidSelector: React.FC<PlaidSelectorProps> = ({ isOpen, onClose, o
   // Reset selection when reopened
   useEffect(() => { if (isOpen) setSelected([]); }, [isOpen]);
 
-  // Esc key handler ... (same as before)
+  // Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="plaid-modal-title"
+      onClick={(e: React.MouseEvent) => e.target === e.currentTarget && onClose()}
+    >
       <LiquidGlass variant="regular" className="w-full max-w-lg overflow-hidden flex flex-col border-white/15 shadow-2xl rounded-2xl">
         <div className="px-8 py-6 border-b border-white/10 flex items-center justify-between">
            {/* Header Content */}
@@ -120,8 +134,8 @@ export const PlaidSelector: React.FC<PlaidSelectorProps> = ({ isOpen, onClose, o
               <p className="text-hig-caption2 text-white/40 mt-0.5">Securely connect your financial accounts</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 -mr-2 rounded-lg bg-white/5 text-white/30 hover:text-white hover:bg-white/10 transition-colors">
-            <IconClose className="w-5 h-5" />
+          <button onClick={onClose} aria-label="Close dialog" className="p-2 -mr-2 rounded-lg bg-white/5 text-white/30 hover:text-white hover:bg-white/10 transition-colors">
+            <IconClose className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
         

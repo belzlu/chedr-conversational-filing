@@ -1,0 +1,49 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e9]
+        - heading "Chedr" [level=1] [ref=e14]
+      - button "Show Form" [ref=e15] [cursor=pointer]
+    - generic [ref=e17]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - heading "Welcome to Chedr" [level=1] [ref=e21]
+          - paragraph [ref=e22]: File your 2025 taxes in minutes.
+          - paragraph [ref=e23]:
+            - strong [ref=e24]: "How it works:"
+            - text: 1. Connect your accounts
+            - text: 2. Review & optimize
+            - text: 3. File electronically
+          - paragraph [ref=e25]: We'll pull your income, deductions, and documents automatically. Takes about 10 minutes.
+        - button "Get Started" [ref=e27] [cursor=pointer]
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: You
+          - generic [ref=e32]: 5:53:56 PM
+        - paragraph [ref=e34]: (555) 123-4567
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]: Chedr
+          - generic [ref=e39]: 5:53:56 PM
+        - paragraph [ref=e41]: Now let's connect your accounts to pull your tax documents automatically.
+        - generic [ref=e42]:
+          - button "Connect Bank" [ref=e43] [cursor=pointer]
+          - button "Upload Documents" [ref=e44] [cursor=pointer]
+    - group "Message composer" [ref=e47]:
+      - button "Attach file" [ref=e48] [cursor=pointer]:
+        - img [ref=e49]
+      - textbox "Type your message" [ref=e51]:
+        - /placeholder: Message
+      - button "Send message" [ref=e52] [cursor=pointer]:
+        - img [ref=e53]
+  - contentinfo [ref=e56]:
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]: Estimated Refund
+        - generic [ref=e60]: $0.00
+      - button "View tax summary" [ref=e61] [cursor=pointer]: View Summary
+```

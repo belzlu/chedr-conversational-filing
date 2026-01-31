@@ -1,0 +1,120 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation "Sidebar" [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9]: C
+          - generic [ref=e10]: Chedr
+        - button "Toggle Navigation" [ref=e11] [cursor=pointer]:
+          - img [ref=e12]
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - heading "Workspace" [level=3] [ref=e15]
+          - generic [ref=e16]:
+            - button "Tax Filings 2025" [ref=e17] [cursor=pointer]:
+              - img [ref=e18]
+              - generic [ref=e21]: Tax Filings 2025
+            - button "Document Vault" [ref=e22] [cursor=pointer]:
+              - img [ref=e23]
+              - generic [ref=e26]: Document Vault
+            - button "Finance Dashboard" [ref=e27] [cursor=pointer]:
+              - img [ref=e28]
+              - generic [ref=e32]: Finance Dashboard
+        - generic [ref=e34]:
+          - heading "History" [level=3] [ref=e35]
+          - generic [ref=e36]:
+            - button "FY 2024" [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+              - generic [ref=e42]: FY 2024
+            - button "FY 2023" [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+              - generic [ref=e48]: FY 2023
+        - generic [ref=e50]:
+          - heading "Account" [level=3] [ref=e51]
+          - generic [ref=e52]:
+            - button "Profile" [ref=e53] [cursor=pointer]:
+              - img [ref=e54]
+              - generic [ref=e57]: Profile
+            - button "Settings" [ref=e58] [cursor=pointer]:
+              - img [ref=e59]
+              - generic [ref=e62]: Settings
+      - button "JD John Doe Active Filing" [ref=e63] [cursor=pointer]:
+        - generic [ref=e64]: JD
+        - generic [ref=e65]:
+          - generic [ref=e66]: John Doe
+          - generic [ref=e67]: Active Filing
+        - img [ref=e68]
+  - generic [ref=e71]:
+    - banner [ref=e72]:
+      - generic [ref=e73]:
+        - img [ref=e75]
+        - heading "Chedr" [level=1] [ref=e77]
+      - button "Show Form" [ref=e78] [cursor=pointer]
+    - main [ref=e79]:
+      - generic [ref=e80]:
+        - generic [ref=e81]:
+          - generic [ref=e83]: Let's get you filed.
+          - generic [ref=e85]: What's your phone number?
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - generic [ref=e89]: "+1"
+              - textbox "Phone number" [active] [ref=e90]:
+                - /placeholder: (555) 555-5555
+              - button "Verify phone number" [disabled] [ref=e91]: Verify
+            - paragraph [ref=e92]: We'll text you a code.
+        - generic [ref=e94]:
+          - img [ref=e95]
+          - text: Bank-level encryption
+  - complementary:
+    - generic [ref=e98]:
+      - generic [ref=e100]:
+        - img [ref=e102]
+        - generic [ref=e106]:
+          - heading "Tax Summary" [level=2] [ref=e107]
+          - paragraph [ref=e108]: Updates automatically
+      - generic [ref=e109]:
+        - generic:
+          - generic [ref=e110]:
+            - generic [ref=e111]: Income
+            - generic [ref=e112]: $0.00
+          - button "W-2 Income Ready to start $0.00" [ref=e113] [cursor=pointer]:
+            - generic:
+              - generic [ref=e115]:
+                - img [ref=e117]
+                - generic [ref=e120]:
+                  - generic [ref=e121]: W-2 Income
+                  - generic [ref=e122]: Ready to start
+              - generic [ref=e123]:
+                - generic [ref=e124]: $0.00
+                - img [ref=e125]
+        - generic:
+          - generic [ref=e127]:
+            - generic [ref=e128]: Deductions
+            - generic [ref=e129]: $0.00
+          - button "Standard Deduction Edit $14,600" [ref=e130] [cursor=pointer]:
+            - generic:
+              - generic [ref=e132]:
+                - img [ref=e134]
+                - generic [ref=e137]:
+                  - generic [ref=e138]: Standard Deduction
+                  - generic [ref=e139]: Edit
+              - generic [ref=e140]:
+                - generic [ref=e141]: $14,600
+                - img [ref=e142]
+          - button "Mortgage & Property Ready to start $0.00" [ref=e144] [cursor=pointer]:
+            - generic:
+              - generic [ref=e146]:
+                - img [ref=e148]
+                - generic [ref=e152]:
+                  - generic [ref=e153]: Mortgage & Property
+                  - generic [ref=e154]: Ready to start
+              - generic [ref=e155]:
+                - generic [ref=e156]: $0.00
+                - img [ref=e157]
+      - generic [ref=e159]:
+        - generic [ref=e160]: Estimated Refund
+        - button "Review Tax Return"
+```

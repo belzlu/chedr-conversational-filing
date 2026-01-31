@@ -111,7 +111,7 @@ export interface Message {
   isThinking?: boolean;
   widget?: {
     type: 'plaid' | 'upload';
-    data?: any;
+    data?: Record<string, unknown>;
     // Track if widget interaction is complete
     completed?: boolean;
   };
