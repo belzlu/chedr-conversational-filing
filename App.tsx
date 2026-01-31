@@ -8,8 +8,8 @@ import { LiveModelPanel } from './components/LiveModelPanel';
 import { Drawer } from './components/Drawer';
 import { Sidebar } from './components/Sidebar';
 import { MaterialShell, SurfaceOpaque } from './components/Material';
-import { PlaidSelector } from './components/PlaidSelector';
 import { DocumentVault } from './components/vault';
+import { ChatOnboarding } from './components/onboarding';
 
 // Golden Ticket: Step 0 - Landing
 const WELCOME_MESSAGE: Message = {
@@ -35,7 +35,6 @@ const App: React.FC = () => {
   const [onboardingPhase, setOnboardingPhase] = useState<OnboardingPhase>('landing');
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isPlaidOpen, setIsPlaidOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState<LoadingStage>(null);
   const [sidebarState, setSidebarState] = useState<'rail' | 'expanded'>('expanded');
@@ -84,14 +83,10 @@ const App: React.FC = () => {
     setHistory(prev => [...prev.slice(-10), current]);
   }, []);
 
-  // Layout Logic: Final mode also uses the 30/70 split
-  const chatPanelClass = (onboardingPhase === 'review' || onboardingPhase === 'final')
-     ? 'hidden lg:flex w-[30%] min-w-[320px]' 
-     : 'flex-1';
+  // Layout Logic: Chat Panel always flex-1, Right Panel toggles width
+  const chatPanelClass = 'flex-1 min-w-0 transition-all duration-500'; 
   
-  const rightPanelClass = (onboardingPhase === 'review' || onboardingPhase === 'final')
-     ? 'flex-1 w-[70%]'
-     : `hidden lg:flex flex-col h-full gap-3 transition-all duration-500 ${isModelVisible ? 'w-[400px] xl:w-[440px] opacity-100' : 'w-0 opacity-0 overflow-hidden'}`;
+  const rightPanelClass = `hidden lg:flex flex-col h-full gap-3 transition-all duration-500 ${isModelVisible ? 'w-[400px] xl:w-[480px] opacity-100' : 'w-0 opacity-0 overflow-hidden'}`;
 
   const handleUpdateField = (docId: string, fieldId: string, newValue: any) => {
     saveToHistory(taxData);
@@ -235,7 +230,7 @@ const App: React.FC = () => {
   const [connectStep, setConnectStep] = useState(0);
 
   const handlePlaidSync = (bankIds: string[]) => {
-    setIsPlaidOpen(false);
+    // Inline Plaid Sync
     setIsLoading(true);
     setLoadingStage('processing');
     
@@ -292,6 +287,19 @@ const App: React.FC = () => {
         ]
       }]);
     }, 2500);
+  };
+
+  const handleFileUpload = (files: File[]) => {
+      handleSendMessage(`Check these documents: ${files.map(f => f.name).join(', ')}`);
+      // Simulate analysis
+      setTimeout(() => {
+         setMessages(prev => [...prev, {
+             id: Date.now().toString(),
+             role: 'model',
+             text: `**Analysis Complete.**\n\nI've analyzed ${files.length} document(s). Added to your vault.`,
+             timestamp: new Date().toLocaleTimeString()
+         }]);
+      }, 2000);
   };
 
   // Step 1.5: Mortgage (Simulated)
@@ -470,13 +478,6 @@ const App: React.FC = () => {
   const handleFinalReview = () => {
       // Switch panel to final summary mode
       setIsModelVisible(true);
-      // We need to pass a property or just assume 'review' mode can show final summary if we toggle it
-      // Actually we defined mode='final' in LiveModelPanel props, let's use it
-      // But onboardingPhase type is: 'landing' | 'phone' | 'identity' | 'bank' | 'dashboard' | 'review'
-      // We might need a new phase 'final_review' or just manage it via state passed to LiveModelPanel
-      
-      // Let's use a specific message to trigger the UI changes if needed, but optimally we update state
-      // For now, let's just trigger the message and keep 'review' phase, but maybe update a sub-state?
       
       setMessages(prev => [...prev, {
           id: Date.now().toString(),
@@ -493,39 +494,63 @@ const App: React.FC = () => {
 
   return (
     <div className="h-screen w-screen flex flex-col lg:flex-row p-4 gap-4 overflow-hidden relative bg-page">
-      <MaterialShell className={`hidden lg:flex ${sidebarState === 'expanded' ? 'w-[280px]' : 'w-[72px]'} flex-col items-center py-6 gap-6 relative z-20 transition-all duration-300`}>
-        <Sidebar 
-          state={sidebarState} 
-          onToggle={() => setSidebarState(s => s === 'rail' ? 'expanded' : 'rail')} 
-          activeView={activeView} 
-          onViewChange={setActiveView} 
-        />
-      </MaterialShell>
+      <nav className="contents" aria-label="Sidebar">
+        <MaterialShell className={`hidden lg:flex ${sidebarState === 'expanded' ? 'w-[280px]' : 'w-[72px]'} flex-col items-center py-6 gap-6 relative z-20 transition-all duration-300`}>
+          <Sidebar 
+            state={sidebarState} 
+            onToggle={() => setSidebarState(s => s === 'rail' ? 'expanded' : 'rail')} 
+            activeView={activeView} 
+            onViewChange={setActiveView} 
+          />
+        </MaterialShell>
+      </nav>
 
       <SurfaceOpaque className={`${chatPanelClass} h-full rounded-xl border border-white/5 overflow-hidden relative shadow-elev1 transition-all duration-500`}>
-        {activeView === 'chat' && (
-          <ChatPanel 
-            messages={messages} 
+        {/* New streamlined onboarding for landing/phone phases */}
+        {activeView === 'chat' && (onboardingPhase === 'landing' || onboardingPhase === 'phone') && (
+          <ChatOnboarding
+            onToggleModel={() => {
+              if (window.innerWidth >= 1024) {
+                setIsModelVisible(!isModelVisible);
+              } else {
+                setIsMobileFormOpen(true);
+              }
+            }}
+            isModelVisible={isModelVisible}
+            onComplete={(phone) => {
+              // Phone verified - transition to bank connection
+              setOnboardingPhase('bank');
+              setMessages(prev => [...prev,
+                { id: `user-${Date.now()}`, role: 'user', text: phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3'), timestamp: new Date().toLocaleTimeString() },
+                {
+                  id: `model-${Date.now()}`,
+                  role: 'model',
+                  text: "Now let's connect your accounts to pull your tax documents automatically.",
+                  timestamp: new Date().toLocaleTimeString(),
+                  chips: [
+                    { label: 'Connect Bank', actionId: 'connect_bank', primary: true },
+                    { label: 'Upload Documents', actionId: 'step_uploads' }
+                  ]
+                }
+              ]);
+            }}
+          />
+        )}
+        {/* Standard chat panel for later phases */}
+        {activeView === 'chat' && onboardingPhase !== 'landing' && onboardingPhase !== 'phone' && (
+          <ChatPanel
+            messages={messages}
             onSendMessage={handleSendMessage}
             onChipClick={(id, label) => {
-              // Step 1 Fix: Guard against duplicate "Get Started" handling
-              if (id === 'get_started') {
-                  // Only handle if we're still on landing (prevents duplicates from rapid clicks)
-                  if (onboardingPhase !== 'landing') return;
-
-                  setOnboardingPhase('phone');
-                  setMessages(prev => [...prev,
-                    { id: `user-${Date.now()}`, role: 'user', text: "Get Started", timestamp: new Date().toLocaleTimeString() },
-                    {
-                        id: `model-${Date.now()}`,
-                        role: 'model',
-                        // Step 1.1 Copy (improved in Step 7)
-                        text: "To get started, I'll need your **phone number**. I'll use it to verify your identity and securely connect your accounts—just like when you use your banking app.",
-                        timestamp: new Date().toLocaleTimeString()
-                    }
-                  ]);
+              if (id === 'connect_bank') {
+                  setMessages(prev => [...prev, {
+                      id: Date.now().toString(),
+                      role: 'model',
+                      text: "Select your bank to securely sync your data:",
+                      timestamp: new Date().toLocaleTimeString(),
+                      widget: { type: 'plaid' }
+                  }]);
               }
-              else if (id === 'connect_bank') setIsPlaidOpen(true);
               
               // Refinement Step Handlers
               else if (id === 'connect_vanguard' || id === 'connect_boa') {
@@ -600,8 +625,14 @@ const App: React.FC = () => {
                   handleAdditionalUploads();
               }
               else if (id === 'upload_misc') {
-                  setIsDrawerOpen(true); // Open drawer for upload
-                  // After "upload", we'd logically move to summary, but for now just let them close it or msg
+                  // Replaced drawer logic with inline widget
+                  setMessages(prev => [...prev, {
+                      id: Date.now().toString(),
+                      role: 'model',
+                      text: "Upload your additional documents here:",
+                      timestamp: new Date().toLocaleTimeString(),
+                      widget: { type: 'upload' }
+                  }]);
               }
               else if (id === 'step_summary') {
                   handleConnectionSummary();
@@ -616,10 +647,6 @@ const App: React.FC = () => {
                       text: "Let's review your info. I've switched to **Review Mode**. \n\nI see a potential deduction for **Student Loan Interest**.",
                       timestamp: new Date().toLocaleTimeString()
                   }]);
-                  // Trigger Questionnaire shortly after? Or wait for user.
-                  // For demo flow, we might want to manually trigger or have a "Continue" button on the panel.
-                  // Implemented: LiveModelPanel "Confirm & File" button calls `onNext`.
-                  // We should change `onNext` to trigger Questionnaire instead of filing immediately.
               }
               // Phase 2 Refinement Handlers
               else if (id === 'q_charity_yes') handleCharityFollowUp('yes');
@@ -635,7 +662,7 @@ const App: React.FC = () => {
             isLoading={isLoading}
             loadingStage={loadingStage}
             // Pass Phase
-            onboardingPhase={onboardingPhase as any} // Cast to keep TS happy if generic check fails, but we updated the type
+            onboardingPhase={onboardingPhase as any}
             onToggleModel={() => {
               if (window.innerWidth >= 1024) {
                   setIsModelVisible(!isModelVisible);
@@ -644,6 +671,8 @@ const App: React.FC = () => {
               }
             }}
             isModelVisible={isModelVisible}
+            onPlaidSync={handlePlaidSync}
+            onFileUpload={handleFileUpload}
           />
         )}
         {activeView === 'vault' && (
@@ -659,7 +688,7 @@ const App: React.FC = () => {
       </SurfaceOpaque>
       
       {/* Desktop Right Panel */}
-      <div className={`${rightPanelClass}`}>
+      <aside className={`${rightPanelClass}`}>
         <LiveModelPanel 
           data={taxData} 
           mode={onboardingPhase === 'review' ? 'review' : onboardingPhase === 'final' ? 'final' : 'summary'}
@@ -668,12 +697,7 @@ const App: React.FC = () => {
              // If in review, go to questionnaire first
              if (onboardingPhase === 'review') {
                  handleSmartQuestionnaire();
-                 setOnboardingPhase('final'); // Or keep review and just show Qs? 
-                 // Actually spec says: Review -> Smart Qs -> Final Summary
-                 // Let's transition phase to 'final' ONLY after Qs are done.
-                 // So here just trigger Qs.
-                 // But wait, changing phase might hide the panel if we aren't careful.
-                 // Let's keep phase='review' during Qs, then 'final'.
+                 setOnboardingPhase('final'); 
              } else if (onboardingPhase === 'final') {
                  handleSendMessage("Finalize my return for submission.");
              }
@@ -684,7 +708,7 @@ const App: React.FC = () => {
           }}
           onClose={() => setIsModelVisible(false)}
         />
-      </div>
+      </aside>
 
       {/* Main Action Drawer */}
       <Drawer 
@@ -715,15 +739,9 @@ const App: React.FC = () => {
         </div>
       </Drawer>
 
-      <PlaidSelector
-        isOpen={isPlaidOpen}
-        onClose={() => setIsPlaidOpen(false)}
-        onSync={handlePlaidSync}
-      />
-
       {/* Step 15: Mobile Bottom Bar for Tax Summary Access */}
       {onboardingPhase !== 'landing' && onboardingPhase !== 'phone' && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl border-t border-white/10 px-4 py-3 hig-safe-area-bottom">
+        <footer className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl border-t border-white/10 px-4 py-3 hig-safe-area-bottom">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <div className="flex flex-col">
               <span className="text-hig-caption2 text-white/40">Estimated Refund</span>
@@ -738,7 +756,7 @@ const App: React.FC = () => {
               View Summary
             </button>
           </div>
-        </div>
+        </footer>
       )}
     </div>
   );

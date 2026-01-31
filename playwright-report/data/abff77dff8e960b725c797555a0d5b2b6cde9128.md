@@ -1,0 +1,137 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation "Sidebar" [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9]: C
+          - generic [ref=e10]: Chedr
+        - button "Toggle Navigation" [ref=e11] [cursor=pointer]:
+          - img [ref=e12]
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - heading "Workspace" [level=3] [ref=e15]
+          - generic [ref=e16]:
+            - button "Tax Filings 2025" [ref=e17] [cursor=pointer]:
+              - img [ref=e18]
+              - generic [ref=e21]: Tax Filings 2025
+            - button "Document Vault" [ref=e22] [cursor=pointer]:
+              - img [ref=e23]
+              - generic [ref=e26]: Document Vault
+            - button "Finance Dashboard" [ref=e27] [cursor=pointer]:
+              - img [ref=e28]
+              - generic [ref=e32]: Finance Dashboard
+        - generic [ref=e34]:
+          - heading "History" [level=3] [ref=e35]
+          - generic [ref=e36]:
+            - button "FY 2024" [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+              - generic [ref=e42]: FY 2024
+            - button "FY 2023" [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+              - generic [ref=e48]: FY 2023
+        - generic [ref=e50]:
+          - heading "Account" [level=3] [ref=e51]
+          - generic [ref=e52]:
+            - button "Profile" [ref=e53] [cursor=pointer]:
+              - img [ref=e54]
+              - generic [ref=e57]: Profile
+            - button "Settings" [ref=e58] [cursor=pointer]:
+              - img [ref=e59]
+              - generic [ref=e62]: Settings
+      - button "JD John Doe Active Filing" [ref=e63] [cursor=pointer]:
+        - generic [ref=e64]: JD
+        - generic [ref=e65]:
+          - generic [ref=e66]: John Doe
+          - generic [ref=e67]: Active Filing
+        - img [ref=e68]
+  - generic [ref=e71]:
+    - generic [ref=e72]:
+      - generic [ref=e73]:
+        - img [ref=e75]
+        - heading "Chedr" [level=1] [ref=e80]
+      - button "Show Form" [ref=e81] [cursor=pointer]
+    - generic [ref=e83]:
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - heading "Welcome to Chedr" [level=1] [ref=e87]
+          - paragraph [ref=e88]: File your 2025 taxes in minutes.
+          - paragraph [ref=e89]:
+            - strong [ref=e90]: "How it works:"
+            - text: 1. Connect your accounts
+            - text: 2. Review & optimize
+            - text: 3. File electronically
+          - paragraph [ref=e91]: We'll pull your income, deductions, and documents automatically. Takes about 10 minutes.
+        - button "Get Started" [ref=e93] [cursor=pointer]
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - generic [ref=e97]: You
+          - generic [ref=e98]: 5:53:54 PM
+        - paragraph [ref=e100]: (555) 123-4567
+      - generic [ref=e102]:
+        - generic [ref=e103]:
+          - generic [ref=e104]: Chedr
+          - generic [ref=e105]: 5:53:54 PM
+        - paragraph [ref=e107]: Now let's connect your accounts to pull your tax documents automatically.
+        - generic [ref=e108]:
+          - button "Connect Bank" [ref=e109] [cursor=pointer]
+          - button "Upload Documents" [ref=e110] [cursor=pointer]
+    - group "Message composer" [ref=e113]:
+      - button "Attach file" [ref=e114] [cursor=pointer]:
+        - img [ref=e115]
+      - textbox "Type your message" [ref=e117]:
+        - /placeholder: Message
+      - button "Send message" [ref=e118] [cursor=pointer]:
+        - img [ref=e119]
+  - complementary:
+    - generic [ref=e122]:
+      - generic [ref=e124]:
+        - img [ref=e126]
+        - generic [ref=e130]:
+          - heading "Tax Summary" [level=2] [ref=e131]
+          - paragraph [ref=e132]: Updates automatically
+      - generic [ref=e133]:
+        - generic:
+          - generic [ref=e134]:
+            - generic [ref=e135]: Income
+            - generic [ref=e136]: $0.00
+          - button "W-2 Income Ready to start $0.00" [ref=e137] [cursor=pointer]:
+            - generic:
+              - generic [ref=e139]:
+                - img [ref=e141]
+                - generic [ref=e144]:
+                  - generic [ref=e145]: W-2 Income
+                  - generic [ref=e146]: Ready to start
+              - generic [ref=e147]:
+                - generic [ref=e148]: $0.00
+                - img [ref=e149]
+        - generic:
+          - generic [ref=e151]:
+            - generic [ref=e152]: Deductions
+            - generic [ref=e153]: $0.00
+          - button "Standard Deduction Edit $14,600" [ref=e154] [cursor=pointer]:
+            - generic:
+              - generic [ref=e156]:
+                - img [ref=e158]
+                - generic [ref=e161]:
+                  - generic [ref=e162]: Standard Deduction
+                  - generic [ref=e163]: Edit
+              - generic [ref=e164]:
+                - generic [ref=e165]: $14,600
+                - img [ref=e166]
+          - button "Mortgage & Property Ready to start $0.00" [ref=e168] [cursor=pointer]:
+            - generic:
+              - generic [ref=e170]:
+                - img [ref=e172]
+                - generic [ref=e176]:
+                  - generic [ref=e177]: Mortgage & Property
+                  - generic [ref=e178]: Ready to start
+              - generic [ref=e179]:
+                - generic [ref=e180]: $0.00
+                - img [ref=e181]
+      - generic [ref=e183]:
+        - generic [ref=e184]: Estimated Refund
+        - button "Review Tax Return"
+```

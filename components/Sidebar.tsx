@@ -13,6 +13,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ state, onToggle, activeView, o
   const isRail = state === 'rail';
 
 // Apple HIG: Sidebar Nav Item with accessibility
+  // Updated: Outline active state instead of solid fill for less visual weight
   const NavItem = ({ icon: Icon, label, id, active = false }: any) => (
     <button
       type="button"
@@ -20,10 +21,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ state, onToggle, activeView, o
       className={`
       w-full flex items-center gap-[12px] px-3 py-3 rounded-[10px] text-hig-footnote font-medium transition-all group
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hig-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black
-      ${active ? 'bg-hig-blue/50 text-white' : 'text-white/60 hover:text-white hover:bg-white/10'}
+      ${active
+        ? 'bg-transparent border border-hig-blue/40 text-white'
+        : 'text-white/60 hover:text-white hover:bg-white/10 border border-transparent'}
       ${isRail ? 'justify-center px-0' : ''}
     `}>
-      <Icon className={`w-5 h-5 shrink-0 ${active ? 'text-white' : 'text-white/50 group-hover:text-white'}`} style={{ width: '20px', height: '20px' }} aria-hidden="true" />
+      <Icon className={`w-5 h-5 shrink-0 ${active ? 'text-hig-blue' : 'text-white/50 group-hover:text-white'}`} style={{ width: '20px', height: '20px' }} aria-hidden="true" />
       {!isRail && <span className="truncate tracking-normal">{label}</span>}
     </button>
   );
@@ -37,14 +40,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ state, onToggle, activeView, o
             <span className="font-semibold tracking-tight text-white text-[16px]">Chedr</span>
           </div>
         )}
-        <button onClick={onToggle} className="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+        <button onClick={onToggle} className="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors" aria-label="Toggle Navigation">
           <IconMenu className="w-5 h-5" />
         </button>
       </div>
 
       <div className={`flex-1 ${isRail ? 'px-2' : 'px-4'} space-y-6 overflow-y-auto`}>
         <div className="space-y-1">
-          {!isRail && <h3 className="px-3 mb-2 text-hig-section-header text-white/30 uppercase tracking-wider">Workspace</h3>}
+          {!isRail && <h3 className="px-3 mb-2 text-hig-caption2 text-white/40 font-medium">Workspace</h3>}
           <div className="flex flex-col gap-1">
             <NavItem id="chat" icon={IconClock} label="Tax Filings 2025" active={activeView === 'chat'} />
             <NavItem id="vault" icon={IconFile} label="Document Vault" active={activeView === 'vault'} />
@@ -55,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ state, onToggle, activeView, o
         <div className="h-px bg-white/10 mx-2" /> 
 
         <div className="space-y-1">
-          {!isRail && <h3 className="px-3 mb-2 text-hig-section-header text-white/30 uppercase tracking-wider">History</h3>}
+          {!isRail && <h3 className="px-3 mb-2 text-hig-caption2 text-white/40 font-medium">History</h3>}
           <div className="flex flex-col gap-1">
             <NavItem id="history_24" icon={IconHistory} label="FY 2024" />
             <NavItem id="history_23" icon={IconHistory} label="FY 2023" />
@@ -65,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ state, onToggle, activeView, o
         <div className="h-px bg-white/10 mx-2" />
 
         <div className="space-y-1">
-          {!isRail && <h3 className="px-3 mb-2 text-hig-section-header text-white/30 uppercase tracking-wider">Account</h3>}
+          {!isRail && <h3 className="px-3 mb-2 text-hig-caption2 text-white/40 font-medium">Account</h3>}
           <div className="flex flex-col gap-1">
             <NavItem id="profile" icon={IconUser} label="Profile" active={activeView === 'profile'} />
             <NavItem id="settings" icon={IconSettings} label="Settings" active={activeView === 'settings'} />

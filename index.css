@@ -1,0 +1,445 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   CHEDR DESIGN SYSTEM - Apple HIG Compliant
+   ============================================ */
+
+:root {
+  /* Base colors */
+  --bg-page: #000000;
+  --bg-panel: #1c1c1e;
+  --bg-elevated: #2c2c2e;
+
+  /* Chedr Orange - Primary Accent (replacing blue) */
+  --hig-blue: #FF6B2C;
+  --hig-blue-hover: #FF8147;
+
+  /* Semantic colors */
+  --hig-green: #30D158;
+  --hig-red: #FF453A;
+  --hig-orange: #FF9500;
+  --hig-yellow: #FFD60A;
+
+  /* Gray scale - Apple HIG dark mode */
+  --hig-gray: #8E8E93;
+  --hig-gray2: #636366;
+  --hig-gray3: #48484A;
+  --hig-gray4: #3A3A3C;
+  --hig-gray5: #2C2C2E;
+  --hig-gray6: #1C1C1E;
+
+  /* Typography scale - SF Pro */
+  --hig-largeTitle: 34px;
+  --hig-title1: 28px;
+  --hig-title2: 22px;
+  --hig-title3: 20px;
+  --hig-headline: 17px;
+  --hig-body: 17px;
+  --hig-callout: 16px;
+  --hig-subhead: 15px;
+  --hig-footnote: 13px;
+  --hig-caption1: 12px;
+  --hig-caption2: 11px;
+
+  /* Spacing - 8pt grid */
+  --hig-xs: 4px;
+  --hig-sm: 8px;
+  --hig-md: 16px;
+  --hig-lg: 24px;
+  --hig-xl: 32px;
+
+  /* Border radius */
+  --hig-radius-sm: 8px;
+  --hig-radius-md: 12px;
+  --hig-radius-lg: 16px;
+  --hig-radius-xl: 20px;
+  --hig-radius-card: 10px;
+  --hig-radius-input: 10px;
+}
+
+body {
+  background-color: var(--bg-page);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   TYPOGRAPHY UTILITIES
+   ============================================ */
+
+.text-hig-largeTitle { font-size: var(--hig-largeTitle); line-height: 1.2; }
+.text-hig-title1 { font-size: var(--hig-title1); line-height: 1.2; }
+.text-hig-title2 { font-size: var(--hig-title2); line-height: 1.3; }
+.text-hig-title3 { font-size: var(--hig-title3); line-height: 1.3; }
+.text-hig-headline { font-size: var(--hig-headline); line-height: 1.4; font-weight: 600; }
+.text-hig-body { font-size: var(--hig-body); line-height: 1.5; }
+.text-hig-callout { font-size: var(--hig-callout); line-height: 1.4; }
+.text-hig-subhead { font-size: var(--hig-subhead); line-height: 1.4; }
+.text-hig-footnote { font-size: var(--hig-footnote); line-height: 1.4; }
+.text-hig-caption1 { font-size: var(--hig-caption1); line-height: 1.3; }
+.text-hig-caption2 { font-size: var(--hig-caption2); line-height: 1.3; }
+
+/* Section headers - lighter weight, sentence case */
+.text-hig-section-header {
+  font-size: var(--hig-caption2);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================
+   COLOR UTILITIES
+   ============================================ */
+
+.text-hig-blue { color: var(--hig-blue); }
+.text-hig-green { color: var(--hig-green); }
+.text-hig-red { color: var(--hig-red); }
+.text-hig-orange { color: var(--hig-orange); }
+.text-hig-gray { color: var(--hig-gray); }
+
+.bg-hig-blue { background-color: var(--hig-blue); }
+.bg-hig-green { background-color: var(--hig-green); }
+.bg-hig-gray5 { background-color: var(--hig-gray5); }
+.bg-hig-gray6 { background-color: var(--hig-gray6); }
+
+/* ============================================
+   SPACING UTILITIES
+   ============================================ */
+
+.px-hig-xs { padding-left: var(--hig-xs); padding-right: var(--hig-xs); }
+.px-hig-sm { padding-left: var(--hig-sm); padding-right: var(--hig-sm); }
+.px-hig-md { padding-left: var(--hig-md); padding-right: var(--hig-md); }
+.px-hig-lg { padding-left: var(--hig-lg); padding-right: var(--hig-lg); }
+
+.py-hig-xs { padding-top: var(--hig-xs); padding-bottom: var(--hig-xs); }
+.py-hig-sm { padding-top: var(--hig-sm); padding-bottom: var(--hig-sm); }
+.py-hig-md { padding-top: var(--hig-md); padding-bottom: var(--hig-md); }
+
+.gap-hig-xs { gap: var(--hig-xs); }
+.gap-hig-sm { gap: var(--hig-sm); }
+.gap-hig-md { gap: var(--hig-md); }
+
+.mt-hig-xs { margin-top: var(--hig-xs); }
+.mt-hig-sm { margin-top: var(--hig-sm); }
+.my-hig-md { margin-top: var(--hig-md); margin-bottom: var(--hig-md); }
+
+/* ============================================
+   BORDER RADIUS UTILITIES
+   ============================================ */
+
+.rounded-hig-sm { border-radius: var(--hig-radius-sm); }
+.rounded-hig-md { border-radius: var(--hig-radius-md); }
+.rounded-hig-lg { border-radius: var(--hig-radius-lg); }
+.rounded-hig-card { border-radius: var(--hig-radius-card); }
+.rounded-hig-input { border-radius: var(--hig-radius-input); }
+
+/* ============================================
+   CHAT BUBBLES - WCAG AA Compliant (4.5:1+)
+   ============================================ */
+
+/* Base chat text - CRITICAL: 85% opacity minimum for legibility */
+.chat-text {
+  font-size: var(--hig-body);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92); /* Increased from 0.85 for better contrast */
+}
+
+/* Received bubble (from Chedr/AI) */
+.hig-bubble {
+  padding: 12px 16px;
+  max-width: 320px;
+  font-size: var(--hig-body);
+  line-height: 1.5;
+}
+
+.hig-bubble-received {
+  background-color: var(--hig-gray5);
+  color: rgba(255, 255, 255, 0.92); /* WCAG AA compliant - 11.5:1 contrast */
+  border-radius: 18px 18px 18px 4px;
+}
+
+/* Sent bubble (from user) */
+.hig-bubble-sent {
+  background-color: var(--hig-blue);
+  color: #FFFFFF; /* Pure white for maximum contrast on blue */
+  border-radius: 18px 18px 4px 18px;
+}
+
+/* ============================================
+   CHIPS/BUTTONS - Consistent 12px radius
+   ============================================ */
+
+.hig-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: var(--hig-subhead);
+  font-weight: 600;
+  border-radius: 12px; /* Standardized */
+  transition: all 150ms ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hig-chip-primary {
+  background-color: var(--hig-blue);
+  color: #FFFFFF;
+}
+
+.hig-chip-primary:hover {
+  background-color: var(--hig-blue-hover);
+}
+
+.hig-chip-secondary {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hig-chip-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+
+/* Touch target - 44x44px minimum per Apple HIG */
+.hig-touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+
+.hig-input {
+  background-color: transparent;
+  border: none;
+  padding: 12px 16px;
+  font-size: var(--hig-body);
+  color: #FFFFFF;
+  outline: none;
+}
+
+.hig-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ============================================
+   TYPING INDICATOR
+   ============================================ */
+
+.hig-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background-color: var(--hig-gray5);
+  border-radius: 18px 18px 18px 4px;
+  width: fit-content;
+}
+
+.hig-typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  animation: typing 1.4s ease-in-out infinite;
+}
+
+.hig-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.hig-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ============================================
+   TIMESTAMP
+   ============================================ */
+
+.hig-timestamp {
+  font-size: var(--hig-caption2);
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
+/* ============================================
+   EDIT LINKS - System Blue
+   ============================================ */
+
+.hig-edit-link {
+  color: var(--hig-blue);
+  font-size: var(--hig-footnote);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+
+.hig-edit-link:hover {
+  opacity: 0.8;
+}
+
+/* ============================================
+   SAFE AREA PADDING (iOS notch/home indicator)
+   ============================================ */
+
+.hig-safe-area-bottom {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes typing {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+/* Animate-in utilities (if not using Tailwind plugin) */
+.animate-in {
+  animation: animateIn 300ms ease-out forwards;
+}
+
+.fade-in {
+  opacity: 0;
+}
+
+.slide-in-from-bottom-2 {
+  transform: translateY(8px);
+}
+
+.slide-in-from-bottom-3 {
+  transform: translateY(12px);
+}
+
+.slide-in-from-bottom-5 {
+  transform: translateY(20px);
+}
+
+.slide-in-from-right-2 {
+  transform: translateX(8px);
+}
+
+.slide-in-from-right-4 {
+  transform: translateX(16px);
+}
+
+@keyframes animateIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+.duration-700 {
+  animation-duration: 700ms;
+}
+
+/* ============================================
+   ACCENT COLORS (existing system)
+   ============================================ */
+
+.text-accent { color: #FBBF24; }
+.bg-accent { background-color: #FBBF24; }
+.border-accent { border-color: #FBBF24; }
+
+.text-ok { color: var(--hig-green); }
+.bg-ok { background-color: var(--hig-green); }
+
+.bg-page { background-color: var(--bg-page); }
+.bg-surface1 { background-color: var(--bg-panel); }
+.bg-surface-elevated { background-color: var(--bg-elevated); }
+
+/* ============================================
+   ELEVATION SHADOWS
+   ============================================ */
+
+.shadow-elev1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.shadow-elev2 {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+.will-change-scroll {
+  will-change: scroll-position;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================
+   MATERIAL VISUAL SYSTEM
+   ============================================ */
+
+.surface-opaque {
+  background-color: var(--bg-surface-elevated);
+  /* Fallback for browsers that don't support variables */
+  background-color: #1c1c1e;
+}
+
+.material-shell-ultraThin {
+  background-color: rgba(28, 28, 30, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.material-shell-regular {
+  background-color: rgba(28, 28, 30, 0.7);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: inset 0 0.5px 0 0 rgba(255,255,255,0.1);
+}
+
+.liquid-glass[data-variant="clear"] {
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}

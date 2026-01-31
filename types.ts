@@ -109,6 +109,12 @@ export interface Message {
   };
   statusUpdate?: string; 
   isThinking?: boolean;
+  widget?: {
+    type: 'plaid' | 'upload';
+    data?: Record<string, unknown>;
+    // Track if widget interaction is complete
+    completed?: boolean;
+  };
 }
 
 export const INITIAL_TAX_DATA: TaxData = {

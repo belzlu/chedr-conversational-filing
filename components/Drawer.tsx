@@ -20,11 +20,11 @@ export const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, onUpload, onAct
       />
       
       {/* Drawer Panel */}
-      <div className={`
+      <aside aria-label={title} aria-hidden={!isOpen} className={`
         fixed left-4 right-4 bottom-4 max-w-[980px] mx-auto 
         rounded-[22px] border border-stroke bg-[#0a0a0e]/90 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.6)]
         z-50 overflow-hidden transition-transform duration-300 cubic-bezier(0.16, 1, 0.3, 1)
-        ${isOpen ? 'translate-y-0' : 'translate-y-[120%]'}
+        ${isOpen ? 'translate-y-0' : 'translate-y-[120%] invisible'}
       `}>
         {/* Header */}
         <div className="flex items-center justify-between px-3.5 py-3 border-b border-white/10">
@@ -35,6 +35,7 @@ export const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, onUpload, onAct
           <button 
             onClick={onClose}
             className="w-8 h-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/70 hover:bg-white/10 transition-colors"
+            aria-label="Close"
           >
             <IconClose className="w-4 h-4" />
           </button>
@@ -95,7 +96,7 @@ export const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, onUpload, onAct
             </div>
           </div>
         )}
-      </div>
+      </aside>
     </>
   );
 };
