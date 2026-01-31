@@ -88,6 +88,7 @@ export const VaultUploadZone: React.FC<VaultUploadZoneProps> = ({
       className={`
         relative rounded-hig-card border-2 border-dashed p-8
         transition-all duration-200 ease-out cursor-pointer
+        rotating-gradient-border
         ${getStateStyles()}
       `}
     >
@@ -96,8 +97,7 @@ export const VaultUploadZone: React.FC<VaultUploadZoneProps> = ({
         multiple
         accept="image/*,.pdf,.doc,.docx"
         onChange={handleFileInput}
-        className="absolute inset-0 w-full h-full cursor-pointer"
-        style={{ opacity: 0 }}
+        className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
         disabled={uploadState === 'uploading' || uploadState === 'processing'}
       />
 
@@ -137,7 +137,7 @@ export const VaultUploadZone: React.FC<VaultUploadZoneProps> = ({
             </p>
             <div className="w-48 h-1 bg-white/20 rounded-full overflow-hidden">
               <div
-                className="h-full bg-chedr-orange rounded-full transition-all duration-300"
+                className="h-full bg-chedr-orange rounded-full transition-all duration-300 glow-progress"
                 style={{ width: `${progress}%` }}
               />
             </div>

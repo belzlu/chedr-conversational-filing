@@ -86,11 +86,12 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
       type="button"
       onClick={onClick}
       className={`
-        w-full text-left p-4 rounded-hig-card transition-all duration-200
+        w-full text-left p-4 rounded-hig-card transition-all duration-300
         border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hig-blue
+        animate-card-entry group
         ${selected
-          ? 'bg-chedr-orange/15 border-chedr-orange/40'
-          : 'bg-white/[0.04] border-white/10 hover:bg-white/[0.08] hover:border-white/20'
+          ? 'bg-chedr-orange/15 border-chedr-orange/40 scale-[1.02]'
+          : 'bg-white/[0.04] border-white/10 hover:bg-white/[0.08] hover:border-white/20 hover:scale-[1.01] active:scale-[0.99]'
         }
       `}
     >
@@ -101,10 +102,10 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
             <img
               src={document.thumbnailUrl}
               alt=""
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover animate-blur-in"
             />
           ) : (
-            <DocumentIcon className="w-6 h-6 text-white/80" />
+            <DocumentIcon className="w-6 h-6 text-white/80 animate-blur-in" />
           )}
         </div>
 

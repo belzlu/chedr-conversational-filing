@@ -130,21 +130,25 @@ const DocumentVaultInner: React.FC<{
         </div>
 
         {/* Upload Zone */}
-        <VaultUploadZone
-          uploadState={uploadState}
-          onUploadStateChange={setUploadState}
-          onFilesSelected={handleFilesSelected}
-          progress={uploadProgress}
-        />
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          <VaultUploadZone
+            uploadState={uploadState}
+            onUploadStateChange={setUploadState}
+            onFilesSelected={handleFilesSelected}
+            progress={uploadProgress}
+          />
+        </div>
 
         {/* Document Table */}
-        <DocumentTable
-          documents={filteredDocuments}
-          filter={filter}
-          onFilterChange={setFilter}
-          selectedDocId={selectedDocId}
-          onSelectDocument={handleSelectDocument}
-        />
+        <div className="animate-in fade-in slide-in-from-bottom-4 delay-150 duration-500">
+          <DocumentTable
+            documents={filteredDocuments}
+            filter={filter}
+            onFilterChange={setFilter}
+            selectedDocId={selectedDocId}
+            onSelectDocument={handleSelectDocument}
+          />
+        </div>
       </div>
 
       {/* Document Detail Slide-Over */}

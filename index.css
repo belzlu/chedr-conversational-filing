@@ -443,3 +443,77 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+
+/* ============================================
+   VAULT POLISH UTILITIES
+   ============================================ */
+
+.glow-progress {
+  box-shadow: 0 0 12px rgba(255, 107, 44, 0.4);
+}
+
+.rotating-gradient-border {
+  position: relative;
+  border-radius: var(--hig-radius-card);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1px;
+}
+
+.rotating-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(from 0deg, 
+    transparent 0%, 
+    var(--hig-blue) 25%, 
+    transparent 50%, 
+    var(--hig-blue) 75%, 
+    transparent 100%);
+  border-radius: inherit;
+  animation: rotateGradient 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.rotating-gradient-border:hover::before {
+  opacity: 0.5;
+}
+
+@keyframes rotateGradient {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-blur-in {
+  animation: blurIn 0.8s ease-out forwards;
+}
+
+@keyframes blurIn {
+  from {
+    filter: blur(10px);
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-card-entry {
+  animation: cardEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes cardEntry {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

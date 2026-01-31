@@ -96,6 +96,100 @@ export interface ChipAction {
   primary?: boolean;
 }
 
+// Plaid Coverage Types for Bank Connection Matrix
+export interface PlaidCoverage {
+  bankId: string;
+  bankName: string;
+  bankIcon?: string;
+  identity: {
+    available: boolean;
+    fields: string[];
+    coverage: number; // 0-4 for ●●●○ style display
+  };
+  income: {
+    wages: boolean;
+    interest: boolean;
+    investments: boolean;
+    other: boolean;
+    coverage: number;
+  };
+  deductions: {
+    mortgage: boolean;
+    charitable: boolean;
+    medical: boolean;
+    coverage: number;
+  };
+  coveragePercent: number;
+}
+
+export interface PlaidConnectionResult {
+  bankId: string;
+  bankName: string;
+  success: boolean;
+  documentsFound: {
+    type: string;
+    amount: string;
+    form?: string;
+  }[];
+  coverage: {
+    identity: { complete: boolean; found: string[] };
+    income: { count: number; total: number; types: string[] };
+    deductions: { count: number; total: number; types: string[] };
+  };
+}
+
+// Mock coverage data for demo banks
+export const BANK_COVERAGE_DATA: Record<string, PlaidCoverage> = {
+  'chase': {
+    bankId: 'chase',
+    bankName: 'Chase',
+    identity: { available: true, fields: ['Name', 'Address', 'Last 4 SSN'], coverage: 3 },
+    income: { wages: true, interest: true, investments: false, other: true, coverage: 3 },
+    deductions: { mortgage: true, charitable: false, medical: false, coverage: 1 },
+    coveragePercent: 85,
+  },
+  'bofa': {
+    bankId: 'bofa',
+    bankName: 'Bank of America',
+    identity: { available: true, fields: ['Name', 'Address'], coverage: 2 },
+    income: { wages: true, interest: true, investments: false, other: false, coverage: 2 },
+    deductions: { mortgage: true, charitable: false, medical: false, coverage: 1 },
+    coveragePercent: 78,
+  },
+  'wells': {
+    bankId: 'wells',
+    bankName: 'Wells Fargo',
+    identity: { available: true, fields: ['Name', 'Address'], coverage: 2 },
+    income: { wages: true, interest: true, investments: false, other: false, coverage: 2 },
+    deductions: { mortgage: false, charitable: false, medical: false, coverage: 0 },
+    coveragePercent: 72,
+  },
+  'fidelity': {
+    bankId: 'fidelity',
+    bankName: 'Fidelity',
+    identity: { available: true, fields: ['Name'], coverage: 1 },
+    income: { wages: false, interest: true, investments: true, other: true, coverage: 3 },
+    deductions: { mortgage: false, charitable: false, medical: false, coverage: 0 },
+    coveragePercent: 65,
+  },
+  'schwab': {
+    bankId: 'schwab',
+    bankName: 'Schwab',
+    identity: { available: true, fields: ['Name'], coverage: 1 },
+    income: { wages: false, interest: true, investments: true, other: true, coverage: 3 },
+    deductions: { mortgage: false, charitable: false, medical: false, coverage: 0 },
+    coveragePercent: 65,
+  },
+  'capital_one': {
+    bankId: 'capital_one',
+    bankName: 'Capital One',
+    identity: { available: true, fields: ['Name', 'Address'], coverage: 2 },
+    income: { wages: false, interest: true, investments: false, other: false, coverage: 1 },
+    deductions: { mortgage: false, charitable: false, medical: false, coverage: 0 },
+    coveragePercent: 55,
+  },
+};
+
 export interface Message {
   id: string;
   role: 'user' | 'model' | 'system';
