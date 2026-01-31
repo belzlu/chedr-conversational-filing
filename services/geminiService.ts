@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TaxData, ProcessedDocument, FilingStep, ChipAction } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 const updateTaxModelDeclaration = {
   name: "updateTaxModel",
@@ -94,8 +94,9 @@ export const sendMessageToGemini = async (
   options?: { isComplex?: boolean; attachment?: { data: string; mimeType: string } }
 ): Promise<string> => {
   try {
-    // Use Gemini 1.5 Pro for Vision/Complex reasoning, Flash Lite for speed
-    const modelName = (options?.isComplex || options?.attachment) ? 'gemini-1.5-pro-latest' : 'gemini-2.0-flash-lite-preview-02-05';
+    // Use Gemini 2.5 Flash for all requests (Pro requires paid quota)
+    // TODO: Switch to Pro for vision/complex when API key has Pro access
+    const modelName = 'gemini-2.5-flash';
     
     const contextStr = `
       Current Step: ${currentData.currentStep}
