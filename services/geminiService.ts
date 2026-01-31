@@ -94,7 +94,8 @@ export const sendMessageToGemini = async (
   options?: { isComplex?: boolean; attachment?: { data: string; mimeType: string } }
 ): Promise<string> => {
   try {
-    const modelName = (options?.isComplex || options?.attachment) ? 'gemini-3-pro-preview' : 'gemini-flash-lite-latest';
+    // Use Gemini 1.5 Pro for Vision/Complex reasoning, Flash Lite for speed
+    const modelName = (options?.isComplex || options?.attachment) ? 'gemini-1.5-pro-latest' : 'gemini-2.0-flash-lite-preview-02-05';
     
     const contextStr = `
       Current Step: ${currentData.currentStep}
@@ -105,6 +106,7 @@ export const sendMessageToGemini = async (
     `;
 
     const parts: any[] = [{ text: `${contextStr}\nUser: ${newMessage}` }];
+    // Multimodal support: Add image part
     if (options?.attachment) {
       parts.push({
         inlineData: {
@@ -119,9 +121,9 @@ export const sendMessageToGemini = async (
       tools: [{ functionDeclarations: [updateTaxModelDeclaration] }],
     };
 
-    if (modelName === 'gemini-3-pro-preview') {
-      config.thinkingConfig = { thinkingBudget: 32768 };
-    }
+
+    // Use standard config for 1.5 Pro
+    // if (modelName.includes('thinking')) { ... } 
 
     const chat = ai.chats.create({
       model: modelName,

@@ -161,7 +161,7 @@ const DocumentVaultInner: React.FC<{
       {/* Mobile Detail Modal */}
       {selectedDocument && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm">
-          <div className="absolute inset-x-0 bottom-0 top-16 bg-hig-gray6 rounded-t-3xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+          <div className="absolute inset-x-0 bottom-0 top-16 bg-black border-t border-white/10 rounded-t-3xl overflow-hidden animate-in slide-in-from-bottom duration-300">
             <DocumentDetail
               document={selectedDocument}
               onClose={handleCloseDetail}

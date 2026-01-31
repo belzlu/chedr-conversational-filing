@@ -1,8 +1,9 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Message, ChipAction } from '../types';
 import { IconAttach, IconSend, IconMenu, IconFile, IconSecure, IconUpload, IconClose, IconImage, IconCheck, IconInfo, IconCode } from './Icons';
 import { LiquidGlass } from './Material';
+import { PlaidInline } from './PlaidSelector';
+import { InlineUploadWidget } from './chat-widgets/InlineUploadWidget';
 
 // Added 'identifying'
 export type LoadingStage = 'uploading' | 'scanning' | 'extracting' | 'processing' | 'thinking' | 'identifying' | null;
@@ -77,6 +78,10 @@ interface ChatPanelProps {
   onToggleSidebar?: () => void;
   onToggleModel?: () => void;
   isModelVisible?: boolean;
+  
+  // New handlers for widgets
+  onPlaidSync?: (bankIds: string[]) => void;
+  onFileUpload?: (files: File[]) => void; // For multiple file upload widget
 }
 
 // Apple HIG: File attachment card
@@ -102,7 +107,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onboardingPhase,
   onToggleSidebar,
   onToggleModel,
-  isModelVisible
+  isModelVisible,
+  onPlaidSync,
+  onFileUpload
 }) => {
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState<{ data: string; mimeType: string; preview: string; name: string } | null>(null);
@@ -114,7 +121,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, messages.length]);
 
   const processFile = (file: File) => {
     const reader = new FileReader();
@@ -180,10 +187,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       {/* Apple HIG: Message list with proper spacing and GPU acceleration */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-hig-md py-hig-md scroll-smooth will-change-scroll">
         {/* Extra bottom padding on mobile for bottom bar (Step 15) */}
-        <div className="max-w-2xl mx-auto flex flex-col gap-hig-sm pb-24 lg:pb-24 transform-gpu" style={{ paddingBottom: 'max(96px, calc(96px + env(safe-area-inset-bottom)))' }}>
+        <div className="max-w-4xl mx-auto flex flex-col gap-hig-sm pb-24 lg:pb-24 transform-gpu" style={{ paddingBottom: 'max(96px, calc(96px + env(safe-area-inset-bottom)))' }}>
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-300 ${msg.role === 'system' ? 'items-center my-hig-md' : msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`flex flex-col gap-1 ${msg.role === 'system' ? 'w-full max-w-md' : 'max-w-[75%]'}`}>
+              <div className={`flex flex-col gap-1 ${msg.role === 'system' ? 'w-full max-w-md' : 'max-w-[75%]'} w-full`}>
 
                 {/* Apple HIG: Sender label and timestamp */}
                 {msg.role !== 'system' && (
@@ -202,11 +209,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 {/* Apple HIG: Chat bubbles */}
                 <div
                   className={`
-                    relative chat-text
+                    relative chat-text w-fit
                     ${msg.role === 'user'
                       ? 'hig-bubble hig-bubble-sent text-white'
                       : msg.role === 'system'
-                        ? 'bg-surface-elevated border border-white/5 shadow-[0px_8px_24px_rgba(0,0,0,0.4)] text-white text-left px-[40px] py-[48px] rounded-[24px]'
+                        ? 'bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-[0px_8px_40px_rgba(0,0,0,0.6)] text-white text-left px-[40px] py-[48px] rounded-[24px]'
                         : 'hig-bubble hig-bubble-received'
                     }
                     ${onboardingPhase === 'review' ? 'py-2 px-3 text-hig-subhead' : ''}
@@ -214,6 +221,22 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 >
                   {renderMarkdown(msg.text)}
                 </div>
+
+                {/* Inline Widgets */}
+                {msg.widget && (
+                  <div className="mt-2 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-100 w-full flex flex-col items-start px-2">
+                     {msg.widget.type === 'plaid' && onPlaidSync && (
+                        <div className="w-full max-w-lg">
+                          <PlaidInline onSync={onPlaidSync} />
+                        </div>
+                     )}
+                     {msg.widget.type === 'upload' && onFileUpload && (
+                        <div className="w-full max-w-lg">
+                          <InlineUploadWidget onFilesSelected={onFileUpload} />
+                        </div>
+                     )}
+                  </div>
+                )}
 
                 {/* Apple HIG: Status update badge */}
                 {msg.statusUpdate && (
@@ -272,12 +295,12 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Apple HIG: Input area with safe area padding */}
       <div className="px-hig-md pb-hig-md pt-hig-sm bg-black/90 backdrop-blur-xl sticky bottom-0 z-10 hig-safe-area-bottom animate-in slide-in-from-bottom-5 duration-300">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           {onboardingPhase === 'phone' ? (
             /* Apple HIG: Phone input for verification - Step 11: Pre-allocated height to prevent layout shift */
             <div className="flex flex-col items-center gap-3 w-full max-w-sm mx-auto min-h-[88px]">
               <div className="w-full relative">
-                <div className="flex items-center bg-hig-gray5 border border-hig-blue/50 rounded-hig-input overflow-hidden focus-within:border-hig-blue transition-colors" role="group" aria-label="Phone verification">
+                <div className="flex items-center bg-hig-gray5 border border-white/10 rounded-hig-input overflow-hidden focus-within:border-hig-blue transition-colors" role="group" aria-label="Phone verification">
                   <div className="pl-4 pr-2 text-white/50" aria-hidden="true">
                     <span className="text-hig-body">+1</span>
                   </div>

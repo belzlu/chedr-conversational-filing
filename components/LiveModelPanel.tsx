@@ -25,17 +25,21 @@ interface LiveModelPanelProps {
   mode?: 'summary' | 'review' | 'final';
 }
 
+// Standardized card icons - consistent treatment per HIG feedback
 const DocIcon = ({ type, sourceType }: { type: string, sourceType?: string }) => {
-  if (sourceType === 'Plaid') return <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400"><IconBank className="w-4 h-4" /></div>;
-  if (sourceType === 'LastYear') return <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent"><IconHistory className="w-4 h-4" /></div>;
-  return <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/40"><IconFile className="w-4 h-4" /></div>;
+  // All icons use the same neutral treatment for consistency
+  const baseClasses = "w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center";
+
+  if (sourceType === 'Plaid') return <div className={`${baseClasses} text-hig-blue`}><IconBank className="w-4 h-4" /></div>;
+  if (sourceType === 'LastYear') return <div className={`${baseClasses} text-white/60`}><IconHistory className="w-4 h-4" /></div>;
+  return <div className={`${baseClasses} text-white/40`}><IconFile className="w-4 h-4" /></div>;
 };
 
-// Step 5: Typography - use HIG scale
+// Step 5: Typography - use HIG scale (sentence case per Apple HIG)
 const SectionHeader = ({ title, total }: { title: string, total: string }) => (
-  <div className="flex items-center justify-between px-1 mb-2">
-    <span className="text-hig-caption2 font-semibold text-white/40 uppercase tracking-widest">{title}</span>
-    <span className="text-hig-caption2 font-mono text-white/60">{total}</span>
+  <div className="flex items-center justify-between px-1 mb-3">
+    <span className="text-hig-footnote font-medium text-white/50">{title}</span>
+    <span className="text-hig-footnote font-mono text-white/70">{total}</span>
   </div>
 );
 
@@ -57,13 +61,22 @@ const FormSection = ({ title, value, icon, active, onClick }: any) => (
           </div>
           <div className="flex flex-col gap-0.5">
             <span className={`text-hig-footnote font-semibold transition-colors ${active ? 'text-white' : 'text-white/80 group-hover:text-white'}`}>{title}</span>
-            <span className="text-hig-caption2 text-white/30 group-hover:text-white/50 transition-colors">
-              {value === '$0.00' ? 'Ready to start' : 'Edit'}
-            </span>
+            <div className="flex items-center gap-1.5">
+               <span className={`text-hig-caption2 transition-colors ${value === '$0.00' ? 'text-white/30 group-hover:text-white/50' : 'text-hig-blue group-hover:opacity-80'}`}>
+                 {value === '$0.00' ? 'Ready to start' : 'Edit'}
+               </span>
+               {/* Data Lineage Indicator */}
+               {active && (
+                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/10 text-[9px] text-white/60 uppercase tracking-wider font-medium">
+                    <IconFile className="w-2.5 h-2.5 opacity-70" />
+                    Source Verified
+                 </span>
+               )}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className={`text-hig-footnote font-mono font-semibold transition-colors ${active ? 'text-accent' : 'text-white'}`}>{value}</span>
+          <span className="text-hig-footnote font-mono font-semibold text-white">{value}</span>
           <IconChevronRight className={`w-3 h-3 transition-all opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 ${active ? 'text-accent' : 'text-white/40'}`} aria-hidden="true" />
         </div>
       </div>
@@ -135,7 +148,7 @@ export const LiveModelPanel: React.FC<LiveModelPanelProps> = ({
             <h2 className="text-lg font-bold text-white">
               {mode === 'review' ? 'Review & Optimize' : 'Tax Summary'}
             </h2>
-            <p className="text-[11px] text-white/40 font-mono tracking-wider uppercase">
+            <p className="text-hig-caption2 text-white/40 font-normal">
               {mode === 'review' ? 'Maximize your refund' : 'Updates automatically'}
             </p>
           </div>
@@ -166,12 +179,12 @@ export const LiveModelPanel: React.FC<LiveModelPanelProps> = ({
               </button>
             </div>
              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2 text-accent text-xs font-bold uppercase tracking-wider">
-                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                  Potential Deduction
+                <div className="flex items-center gap-2 mb-2 text-accent text-hig-caption2 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+                  Potential deduction
                 </div>
-                <h3 className="text-lg font-bold text-white mb-1">{opt.title}</h3>
-                <p className="text-sm text-white/60 mb-4">{opt.reason} • Could reduce tax by ~$520</p>
+                <h3 className="text-hig-headline text-white mb-1">{opt.title}</h3>
+                <p className="text-hig-footnote text-white/60 mb-4">{opt.reason} • Could reduce tax by ~$520</p>
                 
                 <div className="flex gap-3">
                    <button

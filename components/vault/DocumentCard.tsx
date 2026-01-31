@@ -89,14 +89,14 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
         w-full text-left p-4 rounded-hig-card transition-all duration-200
         border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hig-blue
         ${selected
-          ? 'bg-hig-blue/20 border-hig-blue/50'
-          : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
+          ? 'bg-chedr-orange/15 border-chedr-orange/40'
+          : 'bg-white/[0.04] border-white/10 hover:bg-white/[0.08] hover:border-white/20'
         }
       `}
     >
       <div className="flex items-start gap-3">
         {/* Document Icon/Thumbnail */}
-        <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-12 h-12 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0 overflow-hidden">
           {isSafeImageUrl(document.thumbnailUrl) ? (
             <img
               src={document.thumbnailUrl}
@@ -104,7 +104,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <DocumentIcon className="w-6 h-6 text-white/60" />
+            <DocumentIcon className="w-6 h-6 text-white/80" />
           )}
         </div>
 
@@ -112,11 +112,11 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
         <div className="flex-1 min-w-0">
           {/* Document Type & Name */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-hig-caption2 font-semibold text-hig-blue uppercase tracking-wide">
+            <span className="text-hig-caption2 font-semibold text-chedr-orange uppercase tracking-wide">
               {document.documentType || document.type}
             </span>
           </div>
-          <h4 className="text-hig-footnote font-medium text-white/90 truncate mb-2">
+          <h4 className="text-hig-footnote font-medium text-white truncate mb-2">
             {document.name}
           </h4>
 
@@ -134,7 +134,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
             </span>
 
             {/* Confidence */}
-            <span className="text-hig-caption2 text-white/40">
+            <span className="text-hig-caption2 text-white/70">
               {confidencePercent}% conf.
             </span>
           </div>
@@ -143,20 +143,20 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
         {/* Data Points Count */}
         {document.dataPointCount > 0 && (
           <div className="text-right shrink-0">
-            <span className="text-hig-headline font-semibold text-white/90">
+            <span className="text-hig-headline font-semibold text-white">
               {document.dataPointCount}
             </span>
-            <p className="text-hig-caption2 text-white/40">fields</p>
+            <p className="text-hig-caption2 text-white/60">fields</p>
           </div>
         )}
       </div>
 
       {/* Processing Status Indicator */}
       {document.processingStatus && ['uploading', 'scanning', 'extracting'].includes(document.processingStatus) && (
-        <div className="mt-3 pt-3 border-t border-white/10">
+        <div className="mt-3 pt-3 border-t border-white/20">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-hig-blue border-t-transparent rounded-full animate-spin" />
-            <span className="text-hig-caption2 text-white/60 capitalize">
+            <div className="w-4 h-4 border-2 border-chedr-orange border-t-transparent rounded-full animate-spin" />
+            <span className="text-hig-caption2 text-white/80 capitalize">
               {document.processingStatus}...
             </span>
           </div>
