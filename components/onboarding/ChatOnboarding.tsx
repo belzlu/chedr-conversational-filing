@@ -20,6 +20,7 @@ interface ChatOnboardingProps {
   onVerifyCode?: (code: string) => Promise<boolean>;
   onToggleModel?: () => void;
   isModelVisible?: boolean;
+  isTestMode?: boolean;
 }
 
 interface ChatMessage {
@@ -94,6 +95,7 @@ export const ChatOnboarding: React.FC<ChatOnboardingProps> = ({
   onVerifyCode,
   onToggleModel,
   isModelVisible,
+  isTestMode = false,
 }) => {
   const [flowState, setFlowState] = useState<FlowState>('greeting');
   const [phone, setPhone] = useState('');
@@ -165,6 +167,15 @@ export const ChatOnboarding: React.FC<ChatOnboardingProps> = ({
     setError(null);
     setFlowState('verifying-code');
     setMessages(prev => [...prev, { id: crypto.randomUUID(), text: '••••••', sender: 'user' }]);
+
+    if (isTestMode) {
+      setTimeout(() => {
+        addChedrMessage('TEST MODE: Verification bypassed.');
+        setFlowState('success');
+        setTimeout(() => onComplete(phone), 1000);
+      }, 500);
+      return;
+    }
 
     try {
       // If custom verification handler provided, use it

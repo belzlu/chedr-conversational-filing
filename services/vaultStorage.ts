@@ -3,6 +3,7 @@ import { ProcessedDocument, TaxData } from '../types';
 const STORAGE_KEYS = {
   VAULT_DOCUMENTS: 'chedr_vault_documents',
   TAX_DATA: 'chedr_tax_data',
+  SESSION_STATE: 'chedr_session_state',
   VAULT_VERSION: 'chedr_vault_version'
 };
 
@@ -17,6 +18,8 @@ export interface VaultStorageInterface {
   deleteDocument(docId: string): Promise<void>;
   saveTaxData(data: TaxData): Promise<void>;
   getTaxData(): Promise<TaxData | null>;
+  saveSessionState(state: { messages: any[], onboardingPhase: string, isTestMode: boolean }): Promise<void>;
+  getSessionState(): Promise<{ messages: any[], onboardingPhase: string, isTestMode: boolean } | null>;
   clear(): Promise<void>;
 }
 
@@ -146,11 +149,26 @@ class LocalStorageVaultStorage implements VaultStorageInterface {
       console.error('Failed to parse stored tax data');
       return null;
     }
+    }
+
+  async saveSessionState(state: { messages: any[], onboardingPhase: string, isTestMode: boolean }): Promise<void> {
+    localStorage.setItem(STORAGE_KEYS.SESSION_STATE, JSON.stringify(state));
+  }
+
+  async getSessionState(): Promise<{ messages: any[], onboardingPhase: string, isTestMode: boolean } | null> {
+    const stored = localStorage.getItem(STORAGE_KEYS.SESSION_STATE);
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return null;
+    }
   }
 
   async clear(): Promise<void> {
     localStorage.removeItem(STORAGE_KEYS.VAULT_DOCUMENTS);
     localStorage.removeItem(STORAGE_KEYS.TAX_DATA);
+    localStorage.removeItem(STORAGE_KEYS.SESSION_STATE);
     // Keep version to track cleared state
   }
 }
@@ -189,11 +207,23 @@ export function useVaultPersistence() {
     return storage.saveTaxData(data);
   };
 
+  const loadSessionState = async () => {
+    await storage.init();
+    return storage.getSessionState();
+  };
+
+  const persistSessionState = async (state: { messages: any[], onboardingPhase: string, isTestMode: boolean }) => {
+    await storage.init();
+    return storage.saveSessionState(state);
+  };
+
   return {
     loadDocuments,
     persistDocuments,
     loadTaxData,
     persistTaxData,
+    loadSessionState,
+    persistSessionState,
     storage
   };
 }

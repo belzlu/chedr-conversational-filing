@@ -5,6 +5,7 @@ import { sendMessageToGemini } from './services/geminiService';
 import { useVaultPersistence } from './services/vaultStorage';
 import { ChatPanel, LoadingStage } from './components/ChatPanel';
 import { LiveModelPanel } from './components/LiveModelPanel';
+import { SettingsView } from './components/SettingsView';
 import { Drawer } from './components/Drawer';
 import { Sidebar } from './components/Sidebar';
 import { MaterialShell, SurfaceOpaque } from './components/Material';
@@ -29,6 +30,7 @@ const App: React.FC = () => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [activeView, setActiveView] = useState('chat');
+  const [isTestMode, setIsTestMode] = useState(false);
 
   // Phase 1 Onboarding State + Phase 2 Review + Phase 3 Final
   type OnboardingPhase = 'landing' | 'phone' | 'identity' | 'bank' | 'dashboard' | 'review' | 'final';
@@ -42,7 +44,7 @@ const App: React.FC = () => {
   const [isModelVisible, setIsModelVisible] = useState(false);
 
   // Persistence hooks
-  const { loadTaxData, persistTaxData, loadDocuments, persistDocuments } = useVaultPersistence();
+  const { loadTaxData, persistTaxData, loadSessionState, persistSessionState } = useVaultPersistence();
 
   // Load persisted data on mount
   useEffect(() => {
@@ -55,6 +57,20 @@ const App: React.FC = () => {
           if (storedTaxData.vault && storedTaxData.vault.length > 0) {
             setOnboardingPhase('dashboard');
             setIsModelVisible(true);
+          }
+        }
+        
+        // Load Session State
+        const sessionState = await loadSessionState();
+        if (sessionState) {
+          if (sessionState.isTestMode !== undefined) setIsTestMode(sessionState.isTestMode);
+          if (sessionState.messages) setMessages(sessionState.messages);
+          if (sessionState.onboardingPhase) {
+            setOnboardingPhase(sessionState.onboardingPhase as any);
+            // Restore model visibility if not landing
+            if (sessionState.onboardingPhase !== 'landing' && sessionState.onboardingPhase !== 'phone') {
+               // Logic to determine if model was visible? For now default to closed or checking width
+            }
           }
         }
       } catch (error) {
@@ -78,6 +94,15 @@ const App: React.FC = () => {
 
     return () => clearTimeout(timeoutId);
   }, [taxData, isDataLoaded, persistTaxData]);
+
+  // Persist Session State
+  useEffect(() => {
+    if (!isDataLoaded) return;
+    const timeoutId = setTimeout(() => {
+      persistSessionState({ messages, onboardingPhase, isTestMode }).catch(e => console.error(e));
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [messages, onboardingPhase, isTestMode, isDataLoaded, persistSessionState]);
 
   const saveToHistory = useCallback((current: TaxData) => {
     setHistory(prev => [...prev.slice(-10), current]);
@@ -509,6 +534,7 @@ const App: React.FC = () => {
         {/* New streamlined onboarding for landing/phone phases */}
         {activeView === 'chat' && (onboardingPhase === 'landing' || onboardingPhase === 'phone') && (
           <ChatOnboarding
+            isTestMode={isTestMode}
             onToggleModel={() => {
               if (window.innerWidth >= 1024) {
                 setIsModelVisible(!isModelVisible);
@@ -684,7 +710,12 @@ const App: React.FC = () => {
         )}
         {activeView === 'dashboard' && renderDashboard()}
         {activeView === 'profile' && <div className="p-10 flex items-center justify-center h-full text-white/20 italic">Profile management module loading...</div>}
-        {activeView === 'settings' && <div className="p-10 flex items-center justify-center h-full text-white/20 italic">Settings configuration loading...</div>}
+        {activeView === 'settings' && (
+          <SettingsView 
+            isTestMode={isTestMode} 
+            onToggleTestMode={setIsTestMode} 
+          />
+        )}
       </SurfaceOpaque>
       
       {/* Desktop Right Panel */}
