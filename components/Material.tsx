@@ -2,17 +2,19 @@ import React from 'react';
 
 /**
  * CONTENT layer surface. Always opaque.
+ * Use for: primary content areas, conversation surface, document views
  */
 export function SurfaceOpaque({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`surface-opaque border border-white/[0.05] shadow-lg ${className || ''}`} {...props}>
+    <div className={`surface-opaque rounded-hig-lg ${className || ''}`} {...props}>
       {children}
     </div>
   );
 }
 
 /**
- * SHELL layer for secondary panels. Translucent, no lensing.
+ * SHELL layer for secondary panels. Subtle translucency.
+ * Use for: side panels, secondary surfaces, collapsed states
  */
 export function MaterialShell({
   tone = "ultraThin",
@@ -22,14 +24,16 @@ export function MaterialShell({
 }: React.HTMLAttributes<HTMLDivElement> & { tone?: "ultraThin" | "regular" }) {
   const baseClass = tone === "ultraThin" ? "material-shell-ultraThin" : "material-shell-regular";
   return (
-    <div className={`${baseClass} border border-white/[0.1] ${className || ''}`} {...props}>
+    <div className={`${baseClass} rounded-hig-lg ${className || ''}`} {...props}>
       {children}
     </div>
   );
 }
 
 /**
- * CONTROL/NAV layer. Liquid glass with lensing effect.
+ * CONTROL/NAV layer. Liquid glass for overlays and sheets.
+ * Per agent.md: structural use only - panels, overlays, sheets
+ * Subtle translucency + hairline borders, not decorative
  */
 export function LiquidGlass({
   variant = "regular",
@@ -40,9 +44,27 @@ export function LiquidGlass({
   return (
     <div
       data-variant={variant}
-      className={`liquid-glass border border-white/[0.15] ${className || ''}`}
+      className={`liquid-glass rounded-hig-lg ${className || ''}`}
       {...props}
     >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Panel component with consistent elevation hierarchy
+ * Use for: cards, drawers, contextual panels
+ */
+export function Panel({
+  elevation = "primary",
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { elevation?: "primary" | "secondary" | "overlay" }) {
+  const baseClass = `panel-${elevation}`;
+  return (
+    <div className={`${baseClass} rounded-hig-lg ${className || ''}`} {...props}>
       {children}
     </div>
   );

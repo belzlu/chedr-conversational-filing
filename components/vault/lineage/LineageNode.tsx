@@ -28,28 +28,22 @@ const getStatusStyles = (status: string) => {
   switch (status) {
     case 'completed':
       return {
-        ring: 'ring-ok/30',
-        bg: 'bg-ok/20',
-        icon: 'text-ok',
-        label: 'text-ok',
-        pulse: false
+        container: 'bg-green-500 text-black border-green-500 shadow-[0_0_12px_rgba(34,197,94,0.3)]',
+        icon: 'text-black',
+        label: 'text-green-500'
       };
     case 'active':
       return {
-        ring: 'ring-hig-blue/50',
-        bg: 'bg-hig-blue/20',
-        icon: 'text-hig-blue',
-        label: 'text-hig-blue',
-        pulse: true
+        container: 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.4)]',
+        icon: 'text-black',
+        label: 'text-white font-semibold'
       };
     case 'pending':
     default:
       return {
-        ring: 'ring-white/10',
-        bg: 'bg-white/5',
-        icon: 'text-white/30',
-        label: 'text-white/30',
-        pulse: false
+        container: 'bg-black border-white/10 text-white/20',
+        icon: 'text-white/20',
+        label: 'text-white/30'
       };
   }
 };
@@ -63,41 +57,32 @@ export const LineageNode: React.FC<LineageNodeProps> = ({
   const styles = getStatusStyles(stage.status);
 
   return (
-    <div className="flex flex-col items-center gap-2 relative">
-      {/* Node Circle */}
+    <div className="flex flex-col items-center gap-3 relative group">
+      {/* Node Circle - Structural Token */}
       <div
         className={`
-          relative w-12 h-12 rounded-full flex items-center justify-center
-          ring-2 ${styles.ring} ${styles.bg}
-          transition-all duration-500
+          relative w-10 h-10 rounded-full flex items-center justify-center
+          border transition-all duration-500 z-10
+          ${styles.container}
         `}
       >
-        {/* Pulse animation for active state */}
-        {styles.pulse && (
-          <>
-            <div className="absolute inset-0 rounded-full bg-hig-blue/20 animate-ping" />
-            <div className="absolute inset-0 rounded-full bg-hig-blue/10 animate-pulse" />
-          </>
+        <Icon className={`w-4 h-4 ${styles.icon}`} />
+        
+        {/* Subtle active indicator ring instead of heavy pulse */}
+        {stage.status === 'active' && (
+           <div className="absolute -inset-1 rounded-full border border-white/20" />
         )}
-        <Icon className={`w-5 h-5 ${styles.icon} relative z-10`} />
       </div>
 
       {/* Label */}
-      <span className={`text-hig-caption2 font-medium ${styles.label} text-center max-w-[80px]`}>
+      <span className={`text-[10px] uppercase tracking-wider font-medium ${styles.label} text-center max-w-[80px]`}>
         {stage.label}
       </span>
 
-      {/* Confidence Badge (if applicable) */}
-      {stage.confidence !== undefined && stage.status === 'completed' && (
-        <span className="text-hig-caption2 text-white/40">
-          {Math.round(stage.confidence * 100)}%
-        </span>
-      )}
-
-      {/* Timestamp (condensed) */}
-      {stage.status === 'completed' && (
-        <span className="text-[10px] text-white/20">
-          {new Date(stage.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      {/* Warning/Confidence Badge (Only if meaningful/low) */}
+      {stage.confidence !== undefined && stage.confidence < 0.8 && stage.status === 'completed' && (
+        <span className="absolute -top-2 -right-2 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center text-[10px] font-bold text-black border border-black" title="Low Confidence">
+          !
         </span>
       )}
     </div>

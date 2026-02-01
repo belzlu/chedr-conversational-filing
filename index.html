@@ -4,109 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chedr — Conversational Filing</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Apple HIG: SF Pro system font stack -->
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['SF Pro Text', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              display: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            },
-            fontSize: {
-              'hig-largeTitle': ['34px', { lineHeight: '41px', letterSpacing: '0.37px', fontWeight: '600' }], // Display Semibold
-              'hig-title1': ['28px', { lineHeight: '34px', letterSpacing: '0.36px', fontWeight: '600' }],
-              'hig-title2': ['22px', { lineHeight: '28px', letterSpacing: '0.35px', fontWeight: '600' }],
-              'hig-title3': ['20px', { lineHeight: '25px', letterSpacing: '0.38px', fontWeight: '600' }],
-              'hig-headline': ['17px', { lineHeight: '22px', letterSpacing: '-0.41px', fontWeight: '600' }],
-              'hig-body': ['17px', { lineHeight: '1.4', letterSpacing: '-0.41px', fontWeight: '400' }], // Body Regular
-              'hig-callout': ['16px', { lineHeight: '21px', letterSpacing: '-0.32px', fontWeight: '400' }],
-              'hig-subhead': ['15px', { lineHeight: '20px', letterSpacing: '-0.24px', fontWeight: '400' }],
-              'hig-footnote': ['13px', { lineHeight: '18px', letterSpacing: '-0.08px', fontWeight: '400' }],
-              'hig-caption1': ['12px', { lineHeight: '16px', letterSpacing: '0', fontWeight: '400' }],
-              'hig-caption2': ['11px', { lineHeight: '13px', letterSpacing: '0.06px', fontWeight: '400' }],
-              'hig-section-header': ['10px', { lineHeight: '12px', letterSpacing: '0', fontWeight: '500' }], // Medium
-            },
-            borderRadius: {
-              'hig-bubble': '18px',
-              'hig-chip': '9999px', // Capsule
-              'hig-input': '18px',
-              'hig-card': '12px',
-              xl: "var(--r-xl)",
-            },
-            boxShadow: {
-              elev1: "var(--sh-elev-1)",
-              elev2: "var(--sh-elev-2)",
-            },
-            spacing: {
-              // Apple HIG 8pt grid
-              'hig-xs': '4px',
-              'hig-sm': '8px',
-              'hig-md': '16px',
-              'hig-lg': '24px',
-              'hig-xl': '32px',
-            },
-            colors: {
-              glassClear: "var(--glass-clear)",
-              // Apple HIG System Colors (Dark Mode) - Using Chedr Orange as primary accent
-              'hig-blue': '#FF6B2C', // Chedr Orange (replacing blue)
-              'hig-green': '#30D158',
-              'hig-red': '#FF453A',
-              'hig-orange': '#FF9F0A',
-              'hig-yellow': '#FFD60A',
-              'hig-teal': '#40C8E0',
-              'hig-indigo': '#5E5CE6',
-              // Apple HIG Grays (Dark Mode)
-              'hig-gray': '#8E8E93',
-              'hig-gray2': '#636366',
-              'hig-gray3': '#48484A',
-              'hig-gray4': '#3A3A3C',
-              'hig-gray5': '#2C2C2E',
-              'hig-gray6': '#1C1C1E',
-              // Chat bubble colors
-              'bubble-sent': '#FF6B2C', // Chedr Orange
-              'bubble-received': '#2C2C2E',
-              // Legacy accent (keeping for gradual migration)
-              accent: '#FF6B2C', // Chedr Orange
-              ok: '#30D158',
-              danger: '#FF453A',
-              // Chedr brand colors (for onboarding components)
-              chedr: {
-                orange: '#FF6B2C',
-                'orange-hover': '#FF8147',
-                'orange-muted': 'rgba(255, 107, 44, 0.2)',
-                background: '#000000',
-                surface: '#1C1C1E',
-                'surface-elevated': '#2C2C2E',
-                'text-primary': '#FFFFFF',
-                'text-secondary': '#8E8E93',
-                'text-tertiary': '#636366',
-                border: '#3A3A3C',
-                'border-focus': '#FF6B2C',
-                success: '#30D158',
-                error: '#FF453A',
-                warning: '#FFD60A',
-              },
-            },
-            keyframes: {
-              'loading-bar': {
-                '0%': { transform: 'translateX(-100%)' },
-                '100%': { transform: 'translateX(100%)' }
-              },
-              'hig-pulse': {
-                '0%, 100%': { opacity: '0.4' },
-                '50%': { opacity: '1' }
-              }
-            },
-            animation: {
-              'loading-bar': 'loading-bar 1.5s infinite ease-in-out',
-              'hig-pulse': 'hig-pulse 1.2s ease-in-out infinite'
-            }
-          },
-        },
-      }
-    </script>
+    <!-- Apple HIG: SF Pro system font stack - Tailwind v4 configured via index.css @theme -->
     <style>
       :root {
         /* Apple HIG: Border Radius */
@@ -133,11 +31,16 @@
         --a-thin: .60;
         --a-regular: .72;
 
-        /* Apple HIG: Dark Mode Surfaces */
-        --surface-0: #000000;
+        /* Apple HIG: Dark Mode Surfaces (avoid pure black) */
+        --surface-0: #0A0A0C;
         --surface-1: #1C1C1E;
         --surface-2: #2C2C2E;
         --surface-3: #3A3A3C;
+
+        /* Chedr Design Tokens — Swift Orange + Cloud Divine */
+        --chedr-orange: #FF6B35;
+        --chedr-cloud: #F5F3EF;
+        --chedr-cloud-divine: #F5F3EF;
 
         /* Apple HIG: Glass */
         --glass-regular: rgba(255, 255, 255, 0.06);
@@ -148,8 +51,8 @@
         --tx-2: rgba(255, 255, 255, 0.6);
         --tx-3: rgba(255, 255, 255, 0.3);
 
-        /* Apple HIG: System Colors (Dark Mode) - Using Chedr Orange as primary accent */
-        --hig-blue: #FF6B2C; /* Chedr Orange (replacing blue) */
+        /* Apple HIG: System Colors (Dark Mode) - Using Swift Orange as primary accent */
+        --hig-blue: #FF6B35; /* Swift Orange (replacing blue) */
         --hig-blue-light: #FF8147; /* Chedr Orange Hover */
         --hig-green: #30D158;
         --hig-red: #FF453A;
@@ -158,7 +61,7 @@
         --hig-gray6: #1C1C1E;
 
         /* Chat specific */
-        --bubble-sent: #FF6B2C; /* Chedr Orange */
+        --bubble-sent: #FF6B35; /* Swift Orange */
         --bubble-received: #2C2C2E;
         --bubble-sent-text: #FFFFFF;
         --bubble-received-text: #FFFFFF;
@@ -167,9 +70,9 @@
       }
 
       /* Enforce Dark Mode - Light Mode overrides removed */
-      /* Apple HIG: Pure black background for OLED */
+      /* Apple HIG: Near-black background (avoid pure black) */
       body {
-        background-color: #000000;
+        background-color: #0A0A0C;
         background-image: none;
         color: var(--tx-1);
         -webkit-font-smoothing: antialiased;

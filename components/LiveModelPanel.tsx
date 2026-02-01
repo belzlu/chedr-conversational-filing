@@ -25,60 +25,45 @@ interface LiveModelPanelProps {
   mode?: 'summary' | 'review' | 'final';
 }
 
-// Standardized card icons - consistent treatment per HIG feedback
+// Standardized card icons
 const DocIcon = ({ type, sourceType }: { type: string, sourceType?: string }) => {
-  // All icons use the same neutral treatment for consistency
-  const baseClasses = "w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center";
+  const baseClasses = "w-8 h-8 rounded-md bg-white/5 border border-white/10 flex items-center justify-center";
 
-  if (sourceType === 'Plaid') return <div className={`${baseClasses} text-hig-blue`}><IconBank className="w-4 h-4" /></div>;
+  if (sourceType === 'Plaid') return <div className={`${baseClasses} text-green-400`}><IconBank className="w-4 h-4" /></div>;
   if (sourceType === 'LastYear') return <div className={`${baseClasses} text-white/60`}><IconHistory className="w-4 h-4" /></div>;
   return <div className={`${baseClasses} text-white/40`}><IconFile className="w-4 h-4" /></div>;
 };
 
-// Step 5: Typography - use HIG scale (sentence case per Apple HIG)
 const SectionHeader = ({ title, total }: { title: string, total: string }) => (
-  <div className="flex items-center justify-between px-1 mb-3">
-    <span className="text-hig-footnote font-medium text-white/50">{title}</span>
-    <span className="text-hig-footnote font-mono text-white/70">{total}</span>
+  <div className="flex items-center justify-between px-1 mb-2 mt-4">
+    <span className="text-[11px] font-semibold text-white/40 uppercase tracking-wider">{title}</span>
+    <span className="text-[13px] font-mono text-white/60 tabular-nums">{total}</span>
   </div>
 );
 
-// Step 4: Added focus-visible styles for keyboard accessibility
-// Step 5: Updated typography to HIG scale
-const FormSection = ({ title, value, icon, active, onClick }: any) => (
+const FormSection = ({ title, value, icon, active, onClick, verified }: any) => (
     <button
       type="button"
       onClick={onClick}
-      className={`w-full p-4 rounded-xl bg-white/[0.03] border transition-all group text-left relative overflow-hidden
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hig-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black
-        ${active ? 'border-accent/30 shadow-[0_0_20px_rgba(251,191,36,0.05)]' : 'border-white/5 hover:border-white/20 hover:bg-white/[0.05]'}`}
+      className={`w-full p-3 rounded-lg border transition-all duration-200 text-left flex items-center justify-between group
+        ${active 
+          ? 'bg-white/[0.08] border-white/20 shadow-sm' 
+          : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] hover:border-white/10'}`}
     >
-      <div className={`absolute inset-0 bg-accent/5 opacity-0 transition-opacity ${active ? 'opacity-100' : 'group-hover:opacity-50'}`} />
-      <div className="relative flex items-center justify-between z-10">
-        <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${active ? 'bg-accent text-black shadow-lg shadow-accent/20' : 'bg-white/5 text-white/40 group-hover:bg-white/10 group-hover:text-white'}`}>
-            {icon}
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className={`text-hig-footnote font-semibold transition-colors ${active ? 'text-white' : 'text-white/80 group-hover:text-white'}`}>{title}</span>
-            <div className="flex items-center gap-1.5">
-               <span className={`text-hig-caption2 transition-colors ${value === '$0.00' ? 'text-white/30 group-hover:text-white/50' : 'text-hig-blue group-hover:opacity-80'}`}>
-                 {value === '$0.00' ? 'Ready to start' : 'Edit'}
-               </span>
-               {/* Data Lineage Indicator */}
-               {active && (
-                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/10 text-[9px] text-white/60 uppercase tracking-wider font-medium">
-                    <IconFile className="w-2.5 h-2.5 opacity-70" />
-                    Source Verified
-                 </span>
-               )}
-            </div>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className={`w-8 h-8 rounded-md flex items-center justify-center transition-colors ${
+          active ? 'bg-chedr-orange/20 text-chedr-orange' : 'bg-white/[0.06] text-white/40 group-hover:text-white/60'
+        }`}>
+          {icon}
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-hig-footnote font-mono font-semibold text-white">{value}</span>
-          <IconChevronRight className={`w-3 h-3 transition-all opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 ${active ? 'text-accent' : 'text-white/40'}`} aria-hidden="true" />
+        <div>
+          <span className="text-[14px] text-white/90 font-medium block leading-tight">{title}</span>
+          {verified && <span className="text-[10px] text-green-400 font-medium mt-0.5 block">Verified</span>}
         </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-[14px] text-white/80 tabular-nums font-mono">{value}</span>
+        <IconChevronRight className="w-3.5 h-3.5 text-white/20 group-hover:text-white/40" />
       </div>
     </button>
   );
@@ -100,61 +85,85 @@ export const LiveModelPanel: React.FC<LiveModelPanelProps> = ({
 
   if (selectedDoc) {
     return (
-      <div className="h-full flex flex-col gap-3">
-        <LiquidGlass variant="regular" className="px-6 py-4 flex items-center justify-between border-white/10">
-          <div className="flex items-center gap-3">
-            <button onClick={() => setSelectedDocId(null)} className="p-2 -ml-2 rounded-lg hover:bg-white/5 text-accent"><IconArrowLeft className="w-4 h-4" /></button>
-            <h2 className="text-[13px] font-bold text-white">Document Details</h2>
-          </div>
-        </LiquidGlass>
-        <SurfaceOpaque className="flex-1 rounded-xl border border-white/10 overflow-y-auto p-4 space-y-4">
-           <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center gap-4">
+      <div className="h-full flex flex-col bg-chedr-background-secondary">
+        <header className="px-4 py-3 flex items-center gap-3 border-b border-white/10 sticky top-0 bg-chedr-background-secondary/80 backdrop-blur-md z-10">
+           <button onClick={() => setSelectedDocId(null)} className="p-1.5 rounded-md hover:bg-white/10 text-white/60 hover:text-white transition-colors">
+             <IconArrowLeft className="w-4 h-4" />
+           </button>
+           <span className="text-[13px] font-semibold text-white/90">Document Details</span>
+        </header>
+        
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+           {/* Header Card */}
+           <div className="p-4 bg-white/[0.03] border border-white/10 rounded-xl flex items-center gap-4">
              <DocIcon type={selectedDoc.type} sourceType={selectedDoc.sourceType} />
              <div>
-               <h3 className="text-sm font-bold text-white">{selectedDoc.name}</h3>
-               <p className="text-[10px] text-white/30 uppercase tracking-widest">{selectedDoc.sourceType} • {selectedDoc.taxYear}</p>
+               <h3 className="text-[15px] font-semibold text-white">{selectedDoc.name}</h3>
+               <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[11px] text-white/40 uppercase tracking-wider font-medium">{selectedDoc.sourceType}</span>
+                  <span className="w-1 h-1 rounded-full bg-white/20" />
+                  <span className="text-[11px] text-white/40 font-mono">{selectedDoc.taxYear}</span>
+               </div>
              </div>
            </div>
-           {selectedDoc.fields.map(field => (
-             <div key={field.id} className="p-4 bg-black/20 rounded-2xl border border-white/5 space-y-2">
-               <div className="flex items-center justify-between">
-                 <span className="text-[10px] font-black uppercase tracking-widest text-white/20">{field.label}</span>
-                 {field.status === 'WARN' && <span className="text-[8px] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-black">CONFIRM</span>}
+
+           {/* Fields List */}
+           <div className="space-y-3">
+             <div className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1">Extracted Data</div>
+             {selectedDoc.fields.map(field => (
+               <div key={field.id} className="group p-3 bg-white/[0.02] hover:bg-white/[0.04] rounded-xl border border-white/5 transition-colors">
+                 <div className="flex items-center justify-between mb-2">
+                   <span className="text-[11px] font-medium text-white/50 uppercase tracking-wide">{field.label}</span>
+                   {field.status === 'WARN' && <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 font-bold tracking-wide">CHECK</span>}
+                 </div>
+                 <input 
+                   type="text" 
+                   value={field.value} 
+                   onChange={(e) => onUpdateField(selectedDoc.id, field.id, e.target.value)}
+                   className="w-full bg-transparent border-b border-white/10 py-1 text-[14px] text-white font-mono outline-none focus:border-chedr-orange/50 transition-colors placeholder:text-white/20"
+                 />
+                 <div className="mt-2 flex items-center justify-between">
+                    <span className="text-[10px] text-white/20 font-medium">Mapping Target</span>
+                    <span className="text-[10px] text-chedr-orange/80 font-mono bg-chedr-orange/10 px-1.5 py-0.5 rounded">{field.mapping || 'Unassigned'}</span>
+                 </div>
                </div>
-               <input 
-                 type="text" 
-                 value={field.value} 
-                 onChange={(e) => onUpdateField(selectedDoc.id, field.id, e.target.value)}
-                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-mono outline-none focus:border-accent/40"
-               />
-               <p className="text-[9px] text-white/20">Mapping: <span className="text-accent/60">{field.mapping || 'Unassigned'}</span></p>
-             </div>
-           ))}
-        </SurfaceOpaque>
+             ))}
+           </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col bg-surface1/50 backdrop-blur-xl border-l border-white/5 relative overflow-hidden transition-all duration-500">
-      
+    <section 
+      className="h-full flex flex-col bg-chedr-background-secondary border-l border-white/[0.06]"
+      role="region"
+      aria-labelledby="live-panel-heading"
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-white/5">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center shadow-inner ${
+            mode === 'review' ? 'bg-orange-500/10 text-orange-400' : 'bg-white/5 text-white/60'
+          }`}>
             {mode === 'review' ? <IconCheck className="w-5 h-5" /> : <IconBank className="w-5 h-5" />}
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">
+            <h2 id="live-panel-heading" className="text-[15px] font-semibold text-white tracking-tight">
               {mode === 'review' ? 'Review & Optimize' : 'Tax Summary'}
             </h2>
-            <p className="text-hig-caption2 text-white/40 font-normal">
-              {mode === 'review' ? 'Maximize your refund' : 'Updates automatically'}
+            <p className="text-[11px] text-white/40 font-medium">
+              {mode === 'review' ? 'Maximize your refund' : 'FY 2025 • Draft'}
             </p>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/60">
+          <button
+            type="button"
+            onClick={onClose}
+            className="lg:hidden p-2 rounded-md hover:bg-white/10 text-white/40 transition-colors"
+            aria-label="Close panel"
+          >
             <IconClose className="w-4 h-4" />
           </button>
         )}
@@ -163,117 +172,117 @@ export const LiveModelPanel: React.FC<LiveModelPanelProps> = ({
       {/* Body */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         
-        {/* Optimization Cards (Phase 2) */}
+        {/* Optimization Card (Phase 2) */}
         {mode === 'review' && optimizations.map(opt => !opt.applied && (
-          <div key={opt.id} className="p-5 rounded-2xl bg-gradient-to-br from-accent/10 to-transparent border border-accent/20 relative overflow-hidden animate-in slide-in-from-right-4 duration-700">
-            <div className="absolute top-0 right-0 p-3 opacity-20">
-              <button
-                type="button"
-                className="group relative focus-visible:outline-none"
-                aria-label="More information about this deduction"
-              >
-                <IconInfo className="w-12 h-12 text-accent group-hover:opacity-40 transition-opacity" />
-                <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-black/90 text-white text-hig-caption2 rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity shadow-lg">
-                  Based on your connected accounts
-                </span>
-              </button>
-            </div>
-             <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2 text-accent text-hig-caption2 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
-                  Potential deduction
+          <article key={opt.id} className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-500/[0.08] to-transparent border border-orange-500/20 p-5 transition-all">
+             {/* Left accent strip */}
+             <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500" />
+             
+             <div className="relative z-10 pl-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="flex h-2 w-2 relative" aria-hidden="true">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                  </span>
+                  <span className="text-[11px] font-bold text-orange-400 uppercase tracking-wide">Opportunity Found</span>
                 </div>
-                <h3 className="text-hig-headline text-white mb-1">{opt.title}</h3>
-                <p className="text-hig-footnote text-white/60 mb-4">{opt.reason} • Could reduce tax by ~$520</p>
+                
+                <h3 className="text-[16px] font-semibold text-white mb-1">{opt.title}</h3>
+                <p className="text-[13px] text-white/60 mb-4 leading-relaxed">{opt.reason} • Est. Value: <span className="text-white font-medium">$520</span></p>
                 
                 <div className="flex gap-3">
                    <button
                      onClick={() => { handleApplyOptimization(opt.id); onUpdateField('system', 'optimization', opt.amount); }}
-                     className="px-4 py-2 bg-accent text-black text-hig-caption1 font-semibold rounded-lg shadow-lg shadow-accent/20 hover:scale-105 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                     className="px-4 py-2 bg-orange-500 text-black text-[12px] font-bold rounded-lg hover:bg-orange-400 transition-colors shadow-lg shadow-orange-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                    >
-                     Claim Deduction
+                     Apply Deduction
                    </button>
                    <button
                       onClick={() => handleApplyOptimization(opt.id)}
-                      className="px-4 py-2 bg-white/5 text-white/60 text-hig-caption1 font-semibold rounded-lg hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                      className="px-4 py-2 bg-transparent text-white/40 text-[12px] font-medium rounded-lg hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                    >
-                     Not applicable
+                     Dismiss
                    </button>
                 </div>
              </div>
-          </div>
+          </article>
         ))}
 
         {mode === 'final' && (
-           <div className="p-5 rounded-2xl bg-ok/10 border border-ok/20 relative overflow-hidden animate-in slide-in-from-right-4 duration-700 mb-4">
-              <div className="flex items-center gap-3 mb-2">
-                 <div className="w-8 h-8 rounded-full bg-ok text-black flex items-center justify-center shadow-lg shadow-ok/20">
+           <div className="p-5 rounded-xl bg-green-500/[0.08] border border-green-500/20 flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 text-black">
                     <IconCheck className="w-5 h-5" />
                  </div>
-                 <h3 className="text-lg font-bold text-white">Return Ready</h3>
+                 <h3 className="text-[15px] font-bold text-white">Return Ready</h3>
               </div>
-              <p className="text-sm text-white/80 mb-4">
-                 Based on your <strong>8 verified documents</strong>, I'm confident this return is accurate.
+              <p className="text-[13px] text-white/70 leading-relaxed pl-11">
+                 All documents verified. Audit risk is low.
               </p>
-              <div className="flex items-center justify-between text-xs font-bold text-ok/60 uppercase tracking-widest border-t border-ok/10 pt-3">
-                 <span>Audit Risk: Low</span>
-                 <span>Max Refund: Yes</span>
-              </div>
            </div>
         )}
 
-        {/* Existing Sections - now interactive/editable */}
-        <div className="space-y-3">
-          <SectionHeader title="Income" total={data.incomeTotal} />
-          {/* ... existing income items */}
-          <FormSection 
-            title="W-2 Income" 
-            value={data.incomeTotal} 
-            icon={<IconFile className="w-4 h-4" />} 
-            active={data.currentStep === 'INCOME'}
-            onClick={() => onUpdateField('system', 'step', 'INCOME')}
-          />
+        {/* Form Sections */}
+        <div>
+          <h3 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1 mb-2 mt-4 flex justify-between items-center">
+             <span>Income</span>
+             <span className="text-[13px] font-mono text-white/60 tabular-nums">{data.incomeTotal}</span>
+          </h3>
+          <div className="space-y-2">
+            <FormSection 
+              title="W-2 Income" 
+              value={data.incomeTotal} 
+              icon={<IconFile className="w-4 h-4" />} 
+              active={data.currentStep === 'INCOME'}
+              verified={true}
+              onClick={() => onUpdateField('system', 'step', 'INCOME')}
+            />
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <SectionHeader title="Deductions" total={data.deductionsTotal} />
-          {/* ... existing deduction items */}
-          <FormSection 
-             title="Standard Deduction" 
-             value="$14,600" 
-             icon={<IconFile className="w-4 h-4" />}
-             active={false}
-             onClick={() => {}}
-          />
-           <FormSection 
-             title="Mortgage & Property" 
-             value={data.deductionsTotal} 
-             icon={<IconBank className="w-4 h-4" />}
-             active={data.currentStep === 'DEDUCTIONS'}
-             onClick={() => onUpdateField('system', 'step', 'DEDUCTIONS')}
-          />
-          {(mode === 'review' || mode === 'final') && optimizations.map(opt => opt.applied && (
-             <FormSection 
-               key={opt.id}
-               title={opt.title}
-               value={opt.amount}
-               icon={<IconCheck className="w-4 h-4 text-accent" />}
-               active={true}
-               onClick={() => {}}
-             />
-          ))}
+        <div>
+          <h3 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1 mb-2 mt-4 flex justify-between items-center">
+             <span>Deductions</span>
+             <span className="text-[13px] font-mono text-white/60 tabular-nums">{data.deductionsTotal}</span>
+          </h3>
+          <div className="space-y-2">
+            <FormSection 
+              title="Standard Deduction" 
+              value="$14,600" 
+              icon={<IconFile className="w-4 h-4" />} 
+              active={false}
+              onClick={() => {}}
+            />
+            <FormSection 
+              title="Mortgage & Property" 
+              value={data.deductionsTotal} 
+              icon={<IconBank className="w-4 h-4" />}
+              active={data.currentStep === 'DEDUCTIONS'}
+              onClick={() => onUpdateField('system', 'step', 'DEDUCTIONS')}
+            />
+            {(mode === 'review' || mode === 'final') && optimizations.map(opt => opt.applied && (
+              <FormSection 
+                key={opt.id}
+                title={opt.title}
+                value={opt.amount}
+                icon={<IconCheck className="w-4 h-4" />}
+                active={true}
+                verified={true}
+                onClick={() => {}}
+              />
+            ))}
+          </div>
         </div>
 
         {mode === 'final' && (
-           <div className="space-y-3 pt-4 border-t border-white/5">
-             <SectionHeader title="Summary" total="" />
-             <div className="flex justify-between text-sm text-white/60 px-4">
+           <div className="space-y-3 pt-6 mt-2 border-t border-white/[0.06]">
+             <div className="flex justify-between text-[13px] text-white/50 px-2">
                 <span>Tax Owed</span>
-                <span>$8,200</span>
+                <span className="font-mono">$8,200</span>
              </div>
-             <div className="flex justify-between text-sm text-white/60 px-4">
+             <div className="flex justify-between text-[13px] text-white/50 px-2">
                 <span>Withholding</span>
-                <span>$15,670</span>
+                <span className="font-mono">$15,670</span>
              </div>
            </div>
         )}
@@ -281,43 +290,38 @@ export const LiveModelPanel: React.FC<LiveModelPanelProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="p-6 border-t border-white/5 bg-black/20">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-white/60">Estimated Refund</span>
-          <span className="text-2xl font-bold text-ok tabular-nums tracking-tight">{data.estRefund}</span>
-        </div>
-        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mb-6">
-           <div className="h-full bg-ok w-[65%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.4)]"></div>
+      <div className="p-6 border-t border-white/[0.06] bg-chedr-background-secondary/40">
+        <div className="flex items-center justify-between mb-5">
+          <span className="text-[12px] font-medium text-white/40 uppercase tracking-wide">Estimated Refund</span>
+          <span className="text-[24px] font-semibold text-green-400 tabular-nums tracking-tight">{data.estRefund}</span>
         </div>
 
         {mode === 'review' ? (
            <button
              type="button"
              onClick={onNext}
-             className="w-full py-4 rounded-xl bg-ok text-black font-semibold text-hig-subhead hover:brightness-110 transition-all shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ok focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+             className="w-full py-3 rounded-xl bg-white text-black font-bold text-[14px] hover:bg-gray-200 transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
            >
-             <span>Confirm & File</span>
-             <IconCheck className="w-4 h-4" aria-hidden="true" />
+             Confirm & File
            </button>
         ) : mode === 'final' ? (
            <button
              type="button"
              onClick={onNext}
-             className="w-full py-4 rounded-xl bg-ok text-black font-semibold text-hig-subhead hover:brightness-110 transition-all shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ok focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+             className="w-full py-3 rounded-xl bg-green-500 text-black font-bold text-[14px] hover:bg-green-400 transition-colors shadow-lg shadow-green-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
            >
-             <span>Propel to Filing</span>
-             <IconCheck className="w-4 h-4" aria-hidden="true" />
+             Submit Return
            </button>
         ) : (
            <button
              type="button"
              onClick={onReview}
-             className="w-full py-4 rounded-xl bg-accent text-black font-semibold text-hig-subhead hover:brightness-110 transition-all shadow-[0_4px_20px_rgba(251,191,36,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+             className="w-full py-3 rounded-xl bg-white/[0.08] text-white font-semibold text-[14px] hover:bg-white/[0.12] transition-colors border border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
            >
              Review Tax Return
            </button>
         )}
       </div>
-    </div>
+    </section>
   );
 };
