@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { 
-  Paperclip, 
-  Send, 
-  X, 
-  ChevronRight, 
-  ShieldCheck, 
+import {
+  Paperclip,
+  Send,
+  X,
+  ChevronRight,
+  ShieldCheck,
   Menu,
   FileText,
   UploadCloud,
@@ -24,7 +24,12 @@ import {
   Info,
   ExternalLink,
   ChevronDown,
-  Search
+  Search,
+  Eye,
+  ArrowRight,
+  Pencil,
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
 
 export const IconAttach = ({ className }: { className?: string }) => <Paperclip className={className} />;
@@ -45,12 +50,17 @@ export const IconCode = ({ className }: { className?: string }) => <FileCode cla
 export const IconChevronRight = ({ className }: { className?: string }) => <ChevronRight className={className} />;
 export const IconChevronDown = ({ className }: { className?: string }) => <ChevronDown className={className} />;
 export const IconArrowLeft = ({ className }: { className?: string }) => <ArrowLeft className={className} />;
+export const IconArrowRight = ({ className }: { className?: string }) => <ArrowRight className={className} />;
 export const IconBank = ({ className }: { className?: string }) => <Building2 className={className} />;
 export const IconMoney = ({ className }: { className?: string }) => <Banknote className={className} />;
 export const IconHistory = ({ className }: { className?: string }) => <History className={className} />;
 export const IconInfo = ({ className }: { className?: string }) => <Info className={className} />;
 export const IconExternal = ({ className }: { className?: string }) => <ExternalLink className={className} />;
 export const IconSearch = ({ className }: { className?: string }) => <Search className={className} />;
+export const IconEye = ({ className }: { className?: string }) => <Eye className={className} />;
+export const IconEdit = ({ className }: { className?: string }) => <Pencil className={className} />;
+export const IconRefresh = ({ className }: { className?: string }) => <RefreshCw className={className} />;
+export const IconTrash = ({ className }: { className?: string }) => <Trash2 className={className} />;
 
 // SF Symbol-style icons (Apple-inspired clean line icons)
 export const IconIdentity = ({ className }: { className?: string }) => (

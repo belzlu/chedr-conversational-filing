@@ -6,6 +6,7 @@ import { LineageConnection } from './LineageConnection';
 interface LineageCanvasProps {
   stages: LineageStage[];
   className?: string;
+  auditTrail?: any[]; // Future proofing
 }
 
 const getConnectionStatus = (
@@ -23,7 +24,8 @@ const getConnectionStatus = (
 
 export const LineageCanvas: React.FC<LineageCanvasProps> = ({
   stages,
-  className = ''
+  className = '',
+  auditTrail
 }) => {
   if (!stages || stages.length === 0) {
     return (
@@ -36,9 +38,12 @@ export const LineageCanvas: React.FC<LineageCanvasProps> = ({
   return (
     <div className={`${className}`}>
       {/* Header */}
-      <div className="mb-4">
-        <h3 className="text-hig-footnote font-semibold text-white/80">Data Lineage</h3>
-        <p className="text-hig-caption2 text-white/40 mt-0.5">Track your document through processing</p>
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+            <h3 className="text-hig-footnote font-semibold text-white/80">Data Lineage</h3>
+            <p className="text-hig-caption2 text-white/40 mt-0.5">Track your document through processing</p>
+        </div>
+        {/* Placeholder for future detailed audit log toggle */}
       </div>
 
       {/* Lineage Flow */}

@@ -1,19 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ============================================
+   TAILWIND V4 THEME - Chedr Design Tokens
+   ============================================ */
+@theme {
+  /* Chedr Brand Colors — Swift Orange */
+  --color-chedr-orange: #FF6B35;
+  --color-chedr-orange-hover: #FF8147;
+  --color-chedr-orange-muted: rgba(255, 107, 53, 0.2);
+  --color-chedr-orange-soft: #E85A30;
+
+  /* Surfaces (Apple HIG: layered grays, not pure black) */
+  --color-chedr-background: #0A0A0C;
+  --color-chedr-background-secondary: #1C1C1E;
+  --color-chedr-surface: #1C1C1E;
+  --color-chedr-surface-elevated: #2C2C2E;
+
+  /* Text — Cloud Divine (warm off-white) */
+  --color-chedr-cloud: #F5F3EF;
+  --color-chedr-cloud-divine: #F5F3EF;
+  --color-chedr-text-primary: #F5F3EF;
+  --color-chedr-text-secondary: #8E8E93;
+  --color-chedr-text-tertiary: #636366;
+
+  /* Borders */
+  --color-chedr-border: #3A3A3C;
+  --color-chedr-border-focus: #FF6B35;
+
+  /* Semantic */
+  --color-chedr-success: #30D158;
+  --color-chedr-error: #FF453A;
+  --color-chedr-warning: #FFD60A;
+}
 
 /* ============================================
    CHEDR DESIGN SYSTEM - Apple HIG Compliant
    ============================================ */
 
 :root {
-  /* Base colors */
-  --bg-page: #000000;
-  --bg-panel: #1c1c1e;
-  --bg-elevated: #2c2c2e;
+  /* Base colors (Apple HIG: avoid pure black) */
+  --bg-page: #0A0A0C;
+  --bg-panel: #1C1C1E;
+  --bg-elevated: #2C2C2E;
 
-  /* Chedr Orange - Primary Accent (replacing blue) */
-  --hig-blue: #FF6B2C;
+  /* Swift Orange - Primary Accent (replacing blue) */
+  --hig-blue: #FF6B35;
   --hig-blue-hover: #FF8147;
 
   /* Semantic colors */
@@ -68,28 +99,82 @@ body {
 
 /* ============================================
    TYPOGRAPHY UTILITIES
+   Apple HIG-aligned scale with consistent hierarchy
    ============================================ */
 
-.text-hig-largeTitle { font-size: var(--hig-largeTitle); line-height: 1.2; }
-.text-hig-title1 { font-size: var(--hig-title1); line-height: 1.2; }
-.text-hig-title2 { font-size: var(--hig-title2); line-height: 1.3; }
-.text-hig-title3 { font-size: var(--hig-title3); line-height: 1.3; }
-.text-hig-headline { font-size: var(--hig-headline); line-height: 1.4; font-weight: 600; }
-.text-hig-body { font-size: var(--hig-body); line-height: 1.5; }
-.text-hig-callout { font-size: var(--hig-callout); line-height: 1.4; }
-.text-hig-subhead { font-size: var(--hig-subhead); line-height: 1.4; }
-.text-hig-footnote { font-size: var(--hig-footnote); line-height: 1.4; }
-.text-hig-caption1 { font-size: var(--hig-caption1); line-height: 1.3; }
-.text-hig-caption2 { font-size: var(--hig-caption2); line-height: 1.3; }
-
-/* Section headers - lighter weight, sentence case */
-.text-hig-section-header {
+/* Type Scale - Consistent weight/size pairings */
+.text-hig-largeTitle {
+  font-size: var(--hig-largeTitle);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.text-hig-title1 {
+  font-size: var(--hig-title1);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.text-hig-title2 {
+  font-size: var(--hig-title2);
+  line-height: 1.3;
+  font-weight: 600;
+}
+.text-hig-title3 {
+  font-size: var(--hig-title3);
+  line-height: 1.3;
+  font-weight: 600;
+}
+.text-hig-headline {
+  font-size: var(--hig-headline);
+  line-height: 1.4;
+  font-weight: 600;
+}
+.text-hig-body {
+  font-size: var(--hig-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.text-hig-callout {
+  font-size: var(--hig-callout);
+  line-height: 1.4;
+  font-weight: 400;
+}
+.text-hig-subhead {
+  font-size: var(--hig-subhead);
+  line-height: 1.4;
+  font-weight: 400;
+}
+.text-hig-footnote {
+  font-size: var(--hig-footnote);
+  line-height: 1.4;
+  font-weight: 400;
+}
+.text-hig-caption1 {
+  font-size: var(--hig-caption1);
+  line-height: 1.3;
+  font-weight: 400;
+}
+.text-hig-caption2 {
   font-size: var(--hig-caption2);
+  line-height: 1.3;
+  font-weight: 400;
+}
+
+/* Section headers - calm, not shouty */
+.text-hig-section-header {
+  font-size: var(--hig-footnote);
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.5);
 }
+
+/* Text color hierarchy - consistent opacity levels */
+.text-primary { color: rgba(255, 255, 255, 0.95); }
+.text-secondary { color: rgba(255, 255, 255, 0.7); }
+.text-tertiary { color: rgba(255, 255, 255, 0.5); }
+.text-quaternary { color: rgba(255, 255, 255, 0.35); }
 
 /* ============================================
    COLOR UTILITIES
@@ -409,39 +494,83 @@ body {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* ============================================
-   MATERIAL VISUAL SYSTEM
-   ============================================ */
-
-.surface-opaque {
-  background-color: var(--bg-surface-elevated);
-  /* Fallback for browsers that don't support variables */
-  background-color: #1c1c1e;
+.animate-card-entry {
+  animation: cardEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
 }
 
+@keyframes cardEntry {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================
+   MATERIAL VISUAL SYSTEM
+   Per agent.md: structural, subtle, not decorative
+   ============================================ */
+
+/* CONTENT layer - primary surfaces, always opaque */
+.surface-opaque {
+  background-color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* SHELL layer - secondary panels, subtle translucency */
 .material-shell-ultraThin {
-  background-color: rgba(28, 28, 30, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background-color: rgba(28, 28, 30, 0.5);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .material-shell-regular {
-  background-color: rgba(28, 28, 30, 0.7);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background-color: rgba(28, 28, 30, 0.75);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* CONTROL/NAV layer - liquid glass for overlays, sheets, panels
+   Per agent.md: subtle translucency + hairline borders, avoid heavy blur */
 .liquid-glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: inset 0 0.5px 0 0 rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.02);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .liquid-glass[data-variant="clear"] {
   background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Panel surfaces - consistent elevation hierarchy */
+.panel-primary {
+  background-color: rgba(28, 28, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panel-secondary {
+  background-color: rgba(44, 44, 46, 0.8);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panel-overlay {
+  background-color: rgba(28, 28, 30, 0.9);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  backdrop-filter: blur(24px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* ============================================
@@ -450,39 +579,6 @@ body {
 
 .glow-progress {
   box-shadow: 0 0 12px rgba(255, 107, 44, 0.4);
-}
-
-.rotating-gradient-border {
-  position: relative;
-  border-radius: var(--hig-radius-card);
-  background: rgba(255, 255, 255, 0.03);
-  padding: 1px;
-}
-
-.rotating-gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  background: conic-gradient(from 0deg, 
-    transparent 0%, 
-    var(--hig-blue) 25%, 
-    transparent 50%, 
-    var(--hig-blue) 75%, 
-    transparent 100%);
-  border-radius: inherit;
-  animation: rotateGradient 4s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
-}
-
-.rotating-gradient-border:hover::before {
-  opacity: 0.5;
-}
-
-@keyframes rotateGradient {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 .animate-blur-in {
@@ -502,18 +598,43 @@ body {
   }
 }
 
-.animate-card-entry {
-  animation: cardEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  opacity: 0;
+/* Shimmer effect for loading/processing states */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
-@keyframes cardEntry {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+/* Floating animation for subtle movement */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Scan line for processing documents */
+@keyframes scan-line {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--color-chedr-orange), transparent);
+  box-shadow: 0 0 8px var(--color-chedr-orange);
+  animation: scan-line 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 10;
 }

@@ -58,6 +58,8 @@ export interface ProcessedDocument {
   verificationStatus?: VerificationStatus;
   lineageStages?: LineageStage[];
   thumbnailUrl?: string;
+  fileUrl?: string;
+  mimeType?: string;
   fileSize?: string;
   rawText?: string;
 }
@@ -82,6 +84,7 @@ export interface TaxData {
   deductionsTotal: string;
   taxesPaid: string;
   amountDue: string;
+  estRefund?: string;
   checks: string[]; 
   outcome: string; 
   vault: ProcessedDocument[];

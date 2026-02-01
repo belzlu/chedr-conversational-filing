@@ -12,24 +12,29 @@ const config: Config = {
     extend: {
       colors: {
         chedr: {
-          // Brand
-          orange: '#FF6B2C',
+          // Brand — Swift Orange
+          orange: '#FF6B35',               // Swift Orange: primary accent, buttons, highlights
           'orange-hover': '#FF8147',
-          'orange-muted': 'rgba(255, 107, 44, 0.2)',
-          
-          // Surfaces
-          background: '#000000',
-          surface: '#1C1C1E',
-          'surface-elevated': '#2C2C2E',
-          
-          // Text
-          'text-primary': '#FFFFFF',
+          'orange-muted': 'rgba(255, 107, 53, 0.2)',
+          'orange-soft': '#A87A68',        // Muted warm brown for user message pills
+          'orange-pill': '#D4836A',        // Muted terracotta for chat pills
+
+          // Surfaces (Apple HIG: avoid pure black, use layered grays)
+          background: '#0A0A0C',           // Primary: chat panel (darker)
+          'background-secondary': '#1C1C1E', // Secondary: context panel (noticeably lighter)
+          surface: '#1C1C1E',              // iOS secondary system background
+          'surface-elevated': '#2C2C2E',   // iOS tertiary system background
+
+          // Text — Cloud Divine (warm off-white instead of pure white)
+          'cloud': '#F5F3EF',              // Cloud Divine: primary light text
+          'cloud-divine': '#F5F3EF',       // Alias for clarity
+          'text-primary': '#F5F3EF',       // Cloud Divine
           'text-secondary': '#8E8E93',
           'text-tertiary': '#636366',
           
           // Borders
           border: '#3A3A3C',
-          'border-focus': '#FF6B2C',
+          'border-focus': '#FF6B35',       // Swift Orange for focus states
           
           // Semantic
           success: '#30D158',
@@ -48,15 +53,45 @@ const config: Config = {
         ],
       },
       fontSize: {
-        'chat': ['17px', { lineHeight: '1.4' }],
+        // Apple HIG Typography Scale - consistent hierarchy
+        'hig-largeTitle': ['34px', { lineHeight: '1.2', fontWeight: '700' }],
+        'hig-title1': ['28px', { lineHeight: '1.2', fontWeight: '700' }],
+        'hig-title2': ['22px', { lineHeight: '1.3', fontWeight: '600' }],
+        'hig-title3': ['20px', { lineHeight: '1.3', fontWeight: '600' }],
+        'hig-headline': ['17px', { lineHeight: '1.4', fontWeight: '600' }],
+        'hig-body': ['17px', { lineHeight: '1.5', fontWeight: '400' }],
+        'hig-callout': ['16px', { lineHeight: '1.4', fontWeight: '400' }],
+        'hig-subhead': ['15px', { lineHeight: '1.4', fontWeight: '400' }],
+        'hig-footnote': ['13px', { lineHeight: '1.4', fontWeight: '400' }],
+        'hig-caption1': ['12px', { lineHeight: '1.3', fontWeight: '400' }],
+        'hig-caption2': ['11px', { lineHeight: '1.3', fontWeight: '400' }],
+        // Semantic aliases for common use cases
+        'chat': ['17px', { lineHeight: '1.5' }],
         'hint': ['13px', { lineHeight: '1.4' }],
-        'button': ['15px', { lineHeight: '1' }],
+        'button': ['15px', { lineHeight: '1', fontWeight: '600' }],
+        'section': ['13px', { lineHeight: '1.4', fontWeight: '500' }],
       },
       borderRadius: {
-        'bubble': '18px',
-        'bubble-tail': '4px',
-        'input': '18px',
-        'button': '12px',
+        'bubble': '24px',                // Pill-aesthetic for chat bubbles (works for multi-line)
+        'bubble-pill': '9999px',         // True pill for single-line only
+        'bubble-tail': '8px',            // Softer tail corner
+        'input': '9999px',               // Pill shape for input fields
+        'button': '9999px',              // Pill shape for buttons
+        // HIG-aligned radii
+        'hig-sm': '8px',
+        'hig-md': '12px',
+        'hig-lg': '16px',
+        'hig-xl': '20px',
+        'hig-card': '10px',
+      },
+      spacing: {
+        // 8pt grid system - single scale per agent.md
+        'hig-xs': '4px',
+        'hig-sm': '8px',
+        'hig-md': '16px',
+        'hig-lg': '24px',
+        'hig-xl': '32px',
+        'hig-2xl': '48px',
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.2s ease-out forwards',

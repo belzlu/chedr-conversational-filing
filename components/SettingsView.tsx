@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { IconUser, IconCheck, IconClose } from './Icons';
-import { LiquidGlass, SurfaceOpaque } from './Material';
+import React, { useState } from 'react';
+import { IconUser, IconChevronRight } from './Icons';
 
 interface SettingsViewProps {
   onToggleTestMode: (enabled: boolean) => void;
@@ -11,60 +10,102 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onToggleTestMode, is
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   return (
-    <div className="h-full flex flex-col p-6 space-y-8 overflow-y-auto">
-      <div className="space-y-2">
-        <h1 className="text-hig-largeTitle font-bold text-white">Settings</h1>
-        <p className="text-hig-body text-white/60">Manage your preferences and account configuration.</p>
+    <div className="h-full flex flex-col p-6 overflow-y-auto bg-chedr-background">
+      {/* Header */}
+      <header>
+        <h1 className="text-[22px] font-semibold text-white tracking-tight">Settings</h1>
+        <p className="text-[13px] text-white/50 mt-1">
+          Manage your preferences and account.
+        </p>
+      </header>
+
+      <div className="mt-8 space-y-8">
+        {/* Account */}
+        <section aria-labelledby="account-heading">
+          <h2 id="account-heading" className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1 mb-2">Account</h2>
+          <div className="rounded-xl bg-white/[0.04] border border-white/10 divide-y divide-white/10 overflow-hidden">
+            <button type="button" className="w-full p-4 flex items-center gap-3 text-left hover:bg-white/[0.02] transition-colors group focus-visible:outline-none focus-visible:bg-white/[0.06]">
+              <div className="w-10 h-10 rounded-full bg-hig-blue/15 flex items-center justify-center">
+                <IconUser className="w-5 h-5 text-hig-blue" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[15px] text-white font-medium group-hover:text-white transition-colors">John Doe</div>
+                <div className="text-[12px] text-white/50">john.doe@example.com</div>
+              </div>
+              <IconChevronRight className="w-4 h-4 text-white/30 group-hover:text-white/60" />
+            </button>
+          </div>
+        </section>
+
+        {/* Preferences */}
+        <section aria-labelledby="prefs-heading">
+          <h2 id="prefs-heading" className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1 mb-2">Preferences</h2>
+          <div className="rounded-xl bg-white/[0.04] border border-white/10 divide-y divide-white/10 overflow-hidden">
+            <div className="p-4 flex items-center justify-between">
+              <span id="push-notifs-label" className="text-[15px] text-white font-medium">Push Notifications</span>
+              <button
+                role="switch"
+                aria-checked={notificationsEnabled}
+                aria-labelledby="push-notifs-label"
+                onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+                className={`w-[51px] h-[31px] rounded-full transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:ring-green-500 ${notificationsEnabled ? 'bg-green-500' : 'bg-white/20'}`}
+              >
+                <span className="sr-only">{notificationsEnabled ? 'Enabled' : 'Disabled'}</span>
+                <div className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-white shadow transition-transform duration-200 ${notificationsEnabled ? 'translate-x-5' : ''}`} />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Developer */}
+        <section aria-labelledby="dev-heading">
+          <h2 id="dev-heading" className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1 mb-2">Developer</h2>
+          <div className="rounded-xl bg-white/[0.04] border border-white/10 divide-y divide-white/10 overflow-hidden">
+            <div className="p-4 flex items-center justify-between">
+              <div>
+                <div id="test-mode-label" className="text-[15px] text-white font-medium">Test Mode</div>
+                <div className="text-[12px] text-white/40">Skip verification, use mock data</div>
+              </div>
+              <button
+                role="switch"
+                aria-checked={isTestMode}
+                aria-labelledby="test-mode-label"
+                onClick={() => onToggleTestMode(!isTestMode)}
+                className={`w-[51px] h-[31px] rounded-full transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:ring-green-500 ${isTestMode ? 'bg-green-500' : 'bg-white/20'}`}
+              >
+                <span className="sr-only">{isTestMode ? 'Enabled' : 'Disabled'}</span>
+                <div className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-white shadow transition-transform duration-200 ${isTestMode ? 'translate-x-5' : ''}`} />
+              </button>
+            </div>
+          </div>
+          {isTestMode && (
+            <p className="text-[11px] text-orange-400 mt-2 px-1 font-medium" role="alert">
+              Test mode active. Data won't persist.
+            </p>
+          )}
+        </section>
+
+        {/* About */}
+        <section aria-labelledby="about-heading">
+          <h2 id="about-heading" className="text-[11px] font-semibold text-white/40 uppercase tracking-wider px-1 mb-2">About</h2>
+          <div className="rounded-xl bg-white/[0.04] border border-white/10 divide-y divide-white/10 overflow-hidden">
+            <button type="button" className="w-full p-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors group focus-visible:outline-none focus-visible:bg-white/[0.06]">
+              <span className="text-[15px] text-white font-medium">Privacy Policy</span>
+              <IconChevronRight className="w-4 h-4 text-white/30 group-hover:text-white/60" />
+            </button>
+            <button type="button" className="w-full p-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors group focus-visible:outline-none focus-visible:bg-white/[0.06]">
+              <span className="text-[15px] text-white font-medium">Terms of Service</span>
+              <IconChevronRight className="w-4 h-4 text-white/30 group-hover:text-white/60" />
+            </button>
+          </div>
+        </section>
       </div>
 
-      {/* Account Section */}
-      <section className="space-y-4">
-        <h2 className="text-hig-headline font-semibold text-white/40 uppercase tracking-widest text-xs">Account</h2>
-        <SurfaceOpaque className="rounded-xl overflow-hidden border border-white/5">
-          <div className="p-4 flex items-center justify-between border-b border-white/5 bg-white/[0.02]">
-             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-                 <IconUser className="w-5 h-5" />
-               </div>
-               <div>
-                 <div className="text-hig-body font-medium text-white">John Doe</div>
-                 <div className="text-hig-caption1 text-white/40">john.doe@example.com</div>
-               </div>
-             </div>
-             <button className="text-hig-blue text-hig-subhead font-medium hover:opacity-80">Edit</button>
-          </div>
-        </SurfaceOpaque>
-      </section>
-
-      {/* Developer Section */}
-      <section className="space-y-4">
-        <h2 className="text-hig-headline font-semibold text-white/40 uppercase tracking-widest text-xs">Developer & QA</h2>
-        <SurfaceOpaque className="rounded-xl overflow-hidden border border-white/5">
-           <div className="p-4 flex items-center justify-between bg-white/[0.02]">
-             <div>
-               <div className="text-hig-body font-medium text-white">Test Mode</div>
-               <div className="text-hig-caption1 text-white/40">Bypass phone verification and use mock data.</div>
-             </div>
-             <button 
-               onClick={() => onToggleTestMode(!isTestMode)}
-               className={`w-12 h-7 rounded-full transition-colors relative ${isTestMode ? 'bg-hig-green' : 'bg-white/10'}`}
-             >
-               <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${isTestMode ? 'translate-x-5' : 'translate-x-0'}`} />
-             </button>
-           </div>
-        </SurfaceOpaque>
-        {isTestMode && (
-          <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-200 text-sm">
-             <strong>Test Mode Active:</strong> Phone verification will be skipped. Data will not be persisted to server.
-          </div>
-        )}
-      </section>
-      
       <div className="flex-1" />
-      
-      <div className="flex justify-center">
-         <p className="text-hig-caption2 text-white/20">Chedr v2.5.0 (Build 2026.01.30)</p>
-      </div>
+
+      <p className="text-[11px] text-white/20 text-center pt-6 pb-2">
+        Chedr v2.5.0
+      </p>
     </div>
   );
 };

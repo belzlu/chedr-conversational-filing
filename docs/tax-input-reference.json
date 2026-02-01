@@ -1,0 +1,42 @@
+{
+  "taxYear": 2025,
+  "taxpayer": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "ssn": "000-00-0000",
+    "filingStatus": "Single"
+  },
+  "income": {
+    "w2s": [
+      {
+        "employerName": "Tech Corp Inc.",
+        "employerId": "12-3456789",
+        "wages": 95000.00,
+        "fedTaxWithheld": 15000.00,
+        "ssWages": 95000.00,
+        "ssTaxWithheld": 5890.00,
+        "medicareWages": 95000.00,
+        "medicareTaxWithheld": 1377.50,
+        "state": "CA",
+        "stateWages": 95000.00,
+        "stateTax": 4500.00
+      }
+    ],
+    "forms1099Int": [
+      {
+        "payerName": "Big Bank",
+        "interestIncome": 120.50,
+        "fedTaxWithheld": 0.00
+      }
+    ],
+    "forms1099Nec": []
+  },
+  "summary": {
+    "totalIncome": 95120.50,
+    "agi": 95120.50,
+    "taxableIncome": 81270.50,
+    "totalTax": 14200.00,
+    "totalPayments": 15000.00,
+    "refundOrOwe": 800.00
+  }
+}

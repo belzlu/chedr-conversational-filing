@@ -11,6 +11,7 @@ import { Sidebar } from './components/Sidebar';
 import { MaterialShell, SurfaceOpaque } from './components/Material';
 import { DocumentVault } from './components/vault';
 import { ChatOnboarding } from './components/onboarding';
+import { IconFile } from './components/Icons';
 
 // Golden Ticket: Step 0 - Landing
 const WELCOME_MESSAGE: Message = {
@@ -314,17 +315,22 @@ const App: React.FC = () => {
     }, 2500);
   };
 
-  const handleFileUpload = (files: File[]) => {
-      handleSendMessage(`Check these documents: ${files.map(f => f.name).join(', ')}`);
-      // Simulate analysis
-      setTimeout(() => {
-         setMessages(prev => [...prev, {
-             id: Date.now().toString(),
-             role: 'model',
-             text: `**Analysis Complete.**\n\nI've analyzed ${files.length} document(s). Added to your vault.`,
-             timestamp: new Date().toLocaleTimeString()
-         }]);
-      }, 2000);
+  const handleFileUpload = async (files: File[]) => {
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const result = event.target?.result as string;
+        const base64 = result.split(',')[1];
+        
+        handleSendMessage(`Analyzing ${file.name}`, {
+          data: base64,
+          mimeType: file.type,
+          preview: file.type.startsWith('image/') ? result : 'https://img.icons8.com/color/512/pdf.png',
+          name: file.name
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Step 1.5: Mortgage (Simulated)
@@ -435,33 +441,65 @@ const App: React.FC = () => {
   }, [taxData, saveToHistory]);
 
   const handleVaultDocumentSelect = useCallback((doc: ProcessedDocument | null) => {
-    if (doc) {
-      setActiveView('chat');
-      setIsModelVisible(true);
-    }
+    // Keep user in vault view to show details
+    // if (doc) {
+    //   setActiveView('chat');
+    //   setIsModelVisible(true);
+    // }
   }, []);
 
   const renderDashboard = () => (
-    <div className="h-full flex flex-col p-8 overflow-y-auto space-y-8">
-       <div className="flex flex-col gap-1">
-         <h2 className="text-2xl font-bold text-white">Finance Dashboard</h2>
-         <p className="text-sm text-white/30">Tax Season 2025 Overview</p>
-       </div>
-       
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 bg-accent/[0.03] border border-accent/20 rounded-3xl flex flex-col gap-1">
-             <span className="text-[11px] font-black text-accent/60 uppercase tracking-widest">Wages (YTD)</span>
-             <span className="text-3xl font-black text-white">{taxData.incomeTotal}</span>
-          </div>
-          <div className="p-6 bg-white/[0.03] border border-white/10 rounded-3xl flex flex-col gap-1">
-             <span className="text-[11px] font-black text-white/20 uppercase tracking-widest">Deductions</span>
-             <span className="text-3xl font-black text-white">{taxData.deductionsTotal}</span>
-          </div>
-          <div className="p-6 bg-ok/[0.03] border border-ok/20 rounded-3xl flex flex-col gap-1">
-             <span className="text-[11px] font-black text-ok/60 uppercase tracking-widest">Est. Refund</span>
-             <span className="text-3xl font-black text-white">{taxData.outcome}</span>
-          </div>
-       </div>
+    <div className="h-full flex flex-col p-6 overflow-y-auto">
+      {/* Header */}
+      <div>
+        <h1 className="text-hig-title2 font-semibold text-white">Finance Dashboard</h1>
+        <p className="text-hig-footnote text-white/50 mt-1">Tax Season 2025</p>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
+          <span className="text-hig-caption2 text-white/40 uppercase tracking-wide">Wages</span>
+          <span className="block text-hig-title1 font-semibold text-white mt-1">{taxData.incomeTotal}</span>
+        </div>
+        <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
+          <span className="text-hig-caption2 text-white/40 uppercase tracking-wide">Deductions</span>
+          <span className="block text-hig-title1 font-semibold text-white mt-1">{taxData.deductionsTotal}</span>
+        </div>
+        <div className="p-4 rounded-xl bg-ok/[0.08] border border-ok/20">
+          <span className="text-hig-caption2 text-ok/70 uppercase tracking-wide">Est. Refund</span>
+          <span className="block text-hig-title1 font-semibold text-ok mt-1">{taxData.outcome}</span>
+        </div>
+      </div>
+
+      {/* Documents */}
+      <div className="mt-8">
+        <h2 className="text-hig-caption2 text-white/40 uppercase tracking-wide px-1 mb-2">Recent Documents</h2>
+        <div className="rounded-xl bg-white/[0.04] border border-white/10 divide-y divide-white/10">
+          {taxData.vault.slice(0, 3).map((doc) => (
+            <button
+              key={doc.id}
+              type="button"
+              onClick={() => setActiveView('vault')}
+              className="w-full p-4 flex items-center gap-3 text-left hover:bg-white/[0.02] transition-colors"
+            >
+              <div className="w-10 h-10 rounded-lg bg-white/[0.06] flex items-center justify-center">
+                <IconFile className="w-5 h-5 text-white/50" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-hig-caption2 text-hig-blue uppercase tracking-wide">{doc.type}</span>
+                <p className="text-hig-body text-white truncate">{doc.name}</p>
+              </div>
+              <span className="text-hig-caption2 text-white/40">{doc.sourceType}</span>
+            </button>
+          ))}
+          {taxData.vault.length === 0 && (
+            <div className="p-4 text-center">
+              <p className="text-hig-footnote text-white/40">No documents yet.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -518,230 +556,242 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col lg:flex-row p-4 gap-4 overflow-hidden relative bg-page">
-      <nav className="contents" aria-label="Sidebar">
-        <MaterialShell className={`hidden lg:flex ${sidebarState === 'expanded' ? 'w-[280px]' : 'w-[72px]'} flex-col items-center py-6 gap-6 relative z-20 transition-all duration-300`}>
-          <Sidebar 
-            state={sidebarState} 
-            onToggle={() => setSidebarState(s => s === 'rail' ? 'expanded' : 'rail')} 
-            activeView={activeView} 
-            onViewChange={setActiveView} 
-          />
-        </MaterialShell>
+    <div className="h-screen w-screen flex overflow-hidden bg-chedr-background text-white selection:bg-hig-blue/30 selection:text-white">
+      {/* Accessibility: Skip to Main Content */}
+      <a 
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-bold focus:rounded-md shadow-lg"
+      >
+        Skip to main content
+      </a>
+      
+      {/* Left Panel: Sidebar Navigation */}
+      <nav 
+        className={`
+          flex flex-col border-r border-white/[0.06] bg-chedr-background z-30 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]
+          ${sidebarState === 'expanded' ? 'w-[260px]' : 'w-[68px]'}
+          hidden lg:flex
+        `}
+        aria-label="Main Navigation"
+      >
+        <Sidebar 
+          state={sidebarState} 
+          onToggle={() => setSidebarState(s => s === 'rail' ? 'expanded' : 'rail')} 
+          activeView={activeView} 
+          onViewChange={setActiveView} 
+        />
       </nav>
 
-      <SurfaceOpaque className={`${chatPanelClass} h-full rounded-xl border border-white/5 overflow-hidden relative shadow-elev1 transition-all duration-500`}>
-        {/* New streamlined onboarding for landing/phone phases */}
-        {activeView === 'chat' && (onboardingPhase === 'landing' || onboardingPhase === 'phone') && (
-          <ChatOnboarding
-            isTestMode={isTestMode}
-            onToggleModel={() => {
-              if (window.innerWidth >= 1024) {
-                setIsModelVisible(!isModelVisible);
-              } else {
-                setIsMobileFormOpen(true);
-              }
-            }}
-            isModelVisible={isModelVisible}
-            onComplete={(phone) => {
-              // Phone verified - transition to bank connection
-              setOnboardingPhase('bank');
-              setMessages(prev => [...prev,
-                { id: `user-${Date.now()}`, role: 'user', text: phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3'), timestamp: new Date().toLocaleTimeString() },
-                {
-                  id: `model-${Date.now()}`,
-                  role: 'model',
-                  text: "Now let's connect your accounts to pull your tax documents automatically.",
-                  timestamp: new Date().toLocaleTimeString(),
-                  chips: [
-                    { label: 'Connect Bank', actionId: 'connect_bank', primary: true },
-                    { label: 'Upload Documents', actionId: 'step_uploads' }
-                  ]
+      {/* Center Panel: Primary Workspace */}
+      <main id="main-content" className="flex-1 flex flex-col min-w-0 relative z-0 bg-chedr-background" tabIndex={-1}>
+        <div className="flex-1 flex flex-col relative overflow-hidden">
+          
+          {/* Main View Switcher */}
+          {activeView === 'chat' && (onboardingPhase === 'landing' || onboardingPhase === 'phone') && (
+            <ChatOnboarding
+              isTestMode={isTestMode}
+              initialMessage={WELCOME_MESSAGE.text}
+              onToggleModel={() => {
+                if (window.innerWidth >= 1024) {
+                  setIsModelVisible(!isModelVisible);
+                } else {
+                  setIsMobileFormOpen(true);
                 }
-              ]);
-            }}
-          />
-        )}
-        {/* Standard chat panel for later phases */}
-        {activeView === 'chat' && onboardingPhase !== 'landing' && onboardingPhase !== 'phone' && (
-          <ChatPanel
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onChipClick={(id, label) => {
-              if (id === 'connect_bank') {
-                  setMessages(prev => [...prev, {
-                      id: Date.now().toString(),
-                      role: 'model',
-                      text: "Select your bank to securely sync your data:",
-                      timestamp: new Date().toLocaleTimeString(),
-                      widget: { type: 'plaid' }
-                  }]);
-              }
-              
-              // Refinement Step Handlers
-              else if (id === 'connect_vanguard' || id === 'connect_boa') {
-                  // Simulate additional connection -> Then trigger Mortgage
-                  setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: label, timestamp: new Date().toLocaleTimeString() }]);
-                  setTimeout(() => {
-                      setMessages(prev => [...prev, {
-                          id: Date.now().toString(), role: 'model', 
-                          text: `**Connected to ${label.replace('Connect ', '')}.**\n\nI've retrieved your investment documents.`,
-                          timestamp: new Date().toLocaleTimeString()
-                      }]);
-                      // Ask about Mortgage next
-                      setTimeout(() => {
-                          setMessages(prev => [...prev, {
-                              id: (Date.now()+1).toString(), role: 'model',
-                              text: "I see you have a mortgage with **Wells Fargo**. I can pull your 1098 form directly. Would you like me to connect?",
-                              timestamp: new Date().toLocaleTimeString(),
-                              chips: [{ label: "Connect Wells Fargo", actionId: "connect_mortgage", primary: true }, { label: "Skip", actionId: "step_prior_year" }]
-                          }]);
-                      }, 1000);
-                  }, 1500);
-              }
-              else if (id === 'skip_additional') {
-                   // Step 3: Add conversational pacing with bridging copy
-                   setMessages(prev => [...prev, { id: `user-${Date.now()}`, role: 'user', text: "Skip for now", timestamp: new Date().toLocaleTimeString() }]);
+              }}
+              isModelVisible={isModelVisible}
+              onComplete={(phone) => {
+                setOnboardingPhase('bank');
+                setMessages(prev => [...prev,
+                  { id: `user-${Date.now()}`, role: 'user', text: phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3'), timestamp: new Date().toLocaleTimeString() },
+                  {
+                    id: `model-${Date.now()}`,
+                    role: 'model',
+                    text: "Now let's connect your accounts to pull your tax documents automatically.",
+                    timestamp: new Date().toLocaleTimeString(),
+                    chips: [
+                      { label: 'Connect Bank', actionId: 'connect_bank', primary: true },
+                      { label: 'Upload Documents', actionId: 'step_uploads' }
+                    ]
+                  }
+                ]);
+              }}
+            />
+          )}
 
-                   // Show typing indicator
-                   setIsLoading(true);
-                   setLoadingStage('thinking');
-
-                   // Bridging copy first
-                   setTimeout(() => {
+          {activeView === 'chat' && onboardingPhase !== 'landing' && onboardingPhase !== 'phone' && (
+            <ChatPanel
+              messages={messages}
+              onSendMessage={handleSendMessage}
+              onChipClick={(id, label) => {
+                // ... (Existing chip logic)
+                if (id === 'connect_bank') {
+                    setMessages(prev => [...prev, {
+                        id: Date.now().toString(),
+                        role: 'model',
+                        text: "Select your bank to securely sync your data:",
+                        timestamp: new Date().toLocaleTimeString(),
+                        widget: { type: 'plaid' }
+                    }]);
+                }
+                else if (id === 'connect_vanguard' || id === 'connect_boa') {
+                    setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: label, timestamp: new Date().toLocaleTimeString() }]);
+                    setTimeout(() => {
                         setMessages(prev => [...prev, {
-                            id: `model-bridge-${Date.now()}`, role: 'model',
-                            text: "Got it. Let me check what else I can help with...",
+                            id: Date.now().toString(), role: 'model', 
+                            text: `**Connected to ${label.replace('Connect ', '')}.**\n\nI've retrieved your investment documents.`,
                             timestamp: new Date().toLocaleTimeString()
                         }]);
-                   }, 1500);
-
-                   // Then the actual next step
-                   setTimeout(() => {
-                        setIsLoading(false);
-                        setLoadingStage(null);
+                        setTimeout(() => {
+                            setMessages(prev => [...prev, {
+                                id: (Date.now()+1).toString(), role: 'model',
+                                text: "I see you have a mortgage with **Wells Fargo**. I can pull your 1098 form directly. Would you like me to connect?",
+                                timestamp: new Date().toLocaleTimeString(),
+                                chips: [{ label: "Connect Wells Fargo", actionId: "connect_mortgage", primary: true }, { label: "Skip", actionId: "step_prior_year" }]
+                            }]);
+                        }, 1000);
+                    }, 1500);
+                }
+                else if (id === 'skip_additional') {
+                     setMessages(prev => [...prev, { id: `user-${Date.now()}`, role: 'user', text: "Skip for now", timestamp: new Date().toLocaleTimeString() }]);
+                     setIsLoading(true);
+                     setLoadingStage('thinking');
+                     setTimeout(() => {
+                          setMessages(prev => [...prev, {
+                              id: `model-bridge-${Date.now()}`, role: 'model',
+                              text: "Got it. Let me check what else I can help with...",
+                              timestamp: new Date().toLocaleTimeString()
+                          }]);
+                     }, 1500);
+                     setTimeout(() => {
+                          setIsLoading(false);
+                          setLoadingStage(null);
+                          setMessages(prev => [...prev, {
+                              id: `model-${Date.now()}`, role: 'model',
+                              text: "I see you have a mortgage with **Wells Fargo**. I can pull your 1098 form directly. Would you like me to connect?",
+                              timestamp: new Date().toLocaleTimeString(),
+                              chips: [{ label: "Connect Wells Fargo", actionId: "connect_mortgage", primary: true }, { label: "Skip for now", actionId: "step_prior_year" }]
+                          }]);
+                     }, 3000);
+                }
+                else if (id === 'connect_mortgage') {
+                    handleSendMessage("Connect Wells Fargo");
+                    handleMortgageDetection();
+                }
+                else if (id === 'step_prior_year') {
+                    handlePriorYearPrompt();
+                }
+                else if (id === 'import_irs' || id === 'upload_prior') {
+                    handleSendMessage(label);
+                    setTimeout(() => {
                         setMessages(prev => [...prev, {
-                            id: `model-${Date.now()}`, role: 'model',
-                            text: "I see you have a mortgage with **Wells Fargo**. I can pull your 1098 form directly. Would you like me to connect?",
-                            timestamp: new Date().toLocaleTimeString(),
-                            chips: [{ label: "Connect Wells Fargo", actionId: "connect_mortgage", primary: true }, { label: "Skip for now", actionId: "step_prior_year" }]
+                            id: Date.now().toString(), role: 'model',
+                            text: "**Import Successful.**\n\nI've used your 2024 return to populate your filing status and address.",
+                            timestamp: new Date().toLocaleTimeString()
                         }]);
-                   }, 3000);
-              }
-              else if (id === 'connect_mortgage') {
-                  handleSendMessage("Connect Wells Fargo");
-                  handleMortgageDetection();
-              }
-              else if (id === 'step_prior_year') {
-                  handlePriorYearPrompt();
-              }
-              else if (id === 'import_irs' || id === 'upload_prior') {
-                  // Simulate import -> then uploads
-                  handleSendMessage(label);
-                  setTimeout(() => {
-                      setMessages(prev => [...prev, {
-                          id: Date.now().toString(), role: 'model',
-                          text: "**Import Successful.**\n\nI've used your 2024 return to populate your filing status and address.",
-                          timestamp: new Date().toLocaleTimeString()
-                      }]);
-                      handleAdditionalUploads();
-                  }, 2000);
-              }
-              else if (id === 'step_uploads') {
-                  handleAdditionalUploads();
-              }
-              else if (id === 'upload_misc') {
-                  // Replaced drawer logic with inline widget
-                  setMessages(prev => [...prev, {
-                      id: Date.now().toString(),
-                      role: 'model',
-                      text: "Upload your additional documents here:",
-                      timestamp: new Date().toLocaleTimeString(),
-                      widget: { type: 'upload' }
-                  }]);
-              }
-              else if (id === 'step_summary') {
-                  handleConnectionSummary();
-              }
+                        handleAdditionalUploads();
+                    }, 2000);
+                }
+                else if (id === 'step_uploads') {
+                    handleAdditionalUploads();
+                }
+                else if (id === 'upload_misc') {
+                    setMessages(prev => [...prev, {
+                        id: Date.now().toString(),
+                        role: 'model',
+                        text: "Upload your additional documents here:",
+                        timestamp: new Date().toLocaleTimeString(),
+                        widget: { type: 'upload' }
+                    }]);
+                }
+                else if (id === 'step_summary') {
+                    handleConnectionSummary();
+                }
+                else if (id === 'move_review') {
+                    setOnboardingPhase('review');
+                    setIsModelVisible(true);
+                    setMessages(prev => [...prev, {
+                        id: Date.now().toString(), 
+                        role: 'model', 
+                        text: "Let's review your info. I've switched to **Review Mode**. \n\nI see a potential deduction for **Student Loan Interest**.",
+                        timestamp: new Date().toLocaleTimeString()
+                    }]);
+                }
+                else if (id === 'q_charity_yes') handleCharityFollowUp('yes');
+                else if (id === 'q_charity_no') handleCharityFollowUp('no');
+                else if (id === 'start_filing') handleSendMessage("Starting Filing Process...");
+                else if (id === 'upload_docs' || id === 'import_prior') setIsDrawerOpen(true);
+                else if (id === 'view_vault') setActiveView('vault');
+                else handleSendMessage(label);
+              }}
+              onOpenDrawer={() => setIsDrawerOpen(true)}
+              isLoading={isLoading}
+              loadingStage={loadingStage}
+              onboardingPhase={onboardingPhase as any}
+              onToggleModel={() => {
+                if (window.innerWidth >= 1024) {
+                    setIsModelVisible(!isModelVisible);
+                } else {
+                    setIsMobileFormOpen(true);
+                }
+              }}
+              isModelVisible={isModelVisible}
+              onPlaidSync={handlePlaidSync}
+              onFileUpload={handleFileUpload}
+            />
+          )}
 
-              else if (id === 'move_review') {
-                  setOnboardingPhase('review');
-                  setIsModelVisible(true);
-                  setMessages(prev => [...prev, {
-                      id: Date.now().toString(), 
-                      role: 'model', 
-                      text: "Let's review your info. I've switched to **Review Mode**. \n\nI see a potential deduction for **Student Loan Interest**.",
-                      timestamp: new Date().toLocaleTimeString()
-                  }]);
-              }
-              // Phase 2 Refinement Handlers
-              else if (id === 'q_charity_yes') handleCharityFollowUp('yes');
-              else if (id === 'q_charity_no') handleCharityFollowUp('no');
-              else if (id === 'start_filing') handleSendMessage("Starting Filing Process..."); // Move to Phase 3
-
-
-              else if (id === 'upload_docs' || id === 'import_prior') setIsDrawerOpen(true);
-              else if (id === 'view_vault') setActiveView('vault');
-              else handleSendMessage(label);
-            }}
-            onOpenDrawer={() => setIsDrawerOpen(true)}
-            isLoading={isLoading}
-            loadingStage={loadingStage}
-            // Pass Phase
-            onboardingPhase={onboardingPhase as any}
-            onToggleModel={() => {
-              if (window.innerWidth >= 1024) {
-                  setIsModelVisible(!isModelVisible);
-              } else {
-                  setIsMobileFormOpen(true);
-              }
-            }}
-            isModelVisible={isModelVisible}
-            onPlaidSync={handlePlaidSync}
-            onFileUpload={handleFileUpload}
-          />
-        )}
-        {activeView === 'vault' && (
-          <DocumentVault
-            initialDocuments={taxData.vault}
-            onDocumentSelect={handleVaultDocumentSelect}
-            onDocumentProcessed={handleVaultDocumentProcessed}
-          />
-        )}
-        {activeView === 'dashboard' && renderDashboard()}
-        {activeView === 'profile' && <div className="p-10 flex items-center justify-center h-full text-white/20 italic">Profile management module loading...</div>}
-        {activeView === 'settings' && (
-          <SettingsView 
-            isTestMode={isTestMode} 
-            onToggleTestMode={setIsTestMode} 
-          />
-        )}
-      </SurfaceOpaque>
+          {activeView === 'vault' && (
+            <DocumentVault
+              initialDocuments={taxData.vault}
+              onDocumentSelect={handleVaultDocumentSelect}
+              onDocumentProcessed={handleVaultDocumentProcessed}
+            />
+          )}
+          
+          {activeView === 'dashboard' && renderDashboard()}
+          
+          {activeView === 'profile' && (
+             <div className="flex-1 flex items-center justify-center text-white/30 text-sm">Profile Management</div>
+          )}
+          
+          {activeView === 'settings' && (
+            <SettingsView 
+              isTestMode={isTestMode} 
+              onToggleTestMode={setIsTestMode} 
+            />
+          )}
+        </div>
+      </main>
       
-      {/* Desktop Right Panel */}
-      <aside className={`${rightPanelClass}`}>
-        <LiveModelPanel 
-          data={taxData} 
-          mode={onboardingPhase === 'review' ? 'review' : onboardingPhase === 'final' ? 'final' : 'summary'}
-          onReview={() => { setOnboardingPhase('review'); setIsModelVisible(true); }}
-          onNext={() => {
-             // If in review, go to questionnaire first
-             if (onboardingPhase === 'review') {
-                 handleSmartQuestionnaire();
-                 setOnboardingPhase('final'); 
-             } else if (onboardingPhase === 'final') {
-                 handleSendMessage("Finalize my return for submission.");
-             }
-          }}
-          onUpdateField={handleUpdateField}
-          onUndo={() => {
-             // ...
-          }}
-          onClose={() => setIsModelVisible(false)}
-        />
+      {/* Right Panel: Context Drawer */}
+      <aside 
+        className={`
+          hidden lg:flex flex-col border-l border-white/[0.06] bg-chedr-background-secondary/50 backdrop-blur-md
+          transition-all duration-500 cubic-bezier(0.19, 1, 0.22, 1) overflow-hidden
+          ${isModelVisible ? 'w-[420px] opacity-100 translate-x-0' : 'w-0 opacity-0 translate-x-10'}
+        `}
+      >
+        <div className="w-[420px] h-full flex flex-col">
+          <LiveModelPanel 
+            data={taxData} 
+            mode={onboardingPhase === 'review' ? 'review' : onboardingPhase === 'final' ? 'final' : 'summary'}
+            onReview={() => { setOnboardingPhase('review'); setIsModelVisible(true); }}
+            onNext={() => {
+               if (onboardingPhase === 'review') {
+                   handleSmartQuestionnaire();
+                   setOnboardingPhase('final'); 
+               } else if (onboardingPhase === 'final') {
+                   handleSendMessage("Finalize my return for submission.");
+               }
+            }}
+            onUpdateField={handleUpdateField}
+            onUndo={() => {}}
+            onClose={() => setIsModelVisible(false)}
+          />
+        </div>
       </aside>
 
-      {/* Main Action Drawer */}
+      {/* Overlays / Modals */}
       <Drawer 
         isOpen={isDrawerOpen} 
         onClose={() => setIsDrawerOpen(false)} 
@@ -749,7 +799,6 @@ const App: React.FC = () => {
         onAction={(id) => handleSendMessage(`I'd like to ${id}`)}
       />
 
-      {/* Mobile Form Drawer */}
       <Drawer 
         isOpen={isMobileFormOpen} 
         onClose={() => setIsMobileFormOpen(false)} 
@@ -770,19 +819,18 @@ const App: React.FC = () => {
         </div>
       </Drawer>
 
-      {/* Step 15: Mobile Bottom Bar for Tax Summary Access */}
+      {/* Mobile Bottom Bar */}
       {onboardingPhase !== 'landing' && onboardingPhase !== 'phone' && (
-        <footer className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl border-t border-white/10 px-4 py-3 hig-safe-area-bottom">
+        <footer className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-chedr-background/90 backdrop-blur-xl border-t border-white/10 px-4 py-3 hig-safe-area-bottom">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <div className="flex flex-col">
-              <span className="text-hig-caption2 text-white/40">Estimated Refund</span>
-              <span className="text-hig-headline text-hig-green font-semibold">{taxData.estRefund || '$0.00'}</span>
+              <span className="text-[11px] text-white/40 font-medium">Estimated Refund</span>
+              <span className="text-[17px] text-hig-green font-semibold tracking-tight">{taxData.estRefund || '$0.00'}</span>
             </div>
             <button
               type="button"
               onClick={() => setIsMobileFormOpen(true)}
-              className="px-5 py-2.5 bg-hig-blue text-white text-hig-subhead font-semibold rounded-full shadow-lg shadow-hig-blue/20 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hig-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              aria-label="View tax summary"
+              className="px-5 py-2.5 bg-hig-blue text-white text-[15px] font-semibold rounded-full shadow-lg shadow-hig-blue/20 active:scale-95 transition-transform"
             >
               View Summary
             </button>

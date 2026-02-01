@@ -1,6 +1,7 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 import { TaxData, ProcessedDocument, FilingStep, ChipAction } from "../types";
+import { generateExtractionPrompt } from "./taxFormModels";
 
 const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
@@ -84,6 +85,8 @@ PROTOCOLS:
 - Use 'updateTaxModel' every time the model should change. Always provide 'suggestedChips' relevant to the current conversation.
 
 TONE: Warm, professional, expert guide. Formatting: Use **bold** for fields and amounts. Use clear paragraph breaks.
+
+${generateExtractionPrompt()}
 `;
 
 export const sendMessageToGemini = async (

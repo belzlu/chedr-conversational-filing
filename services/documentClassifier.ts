@@ -1,4 +1,4 @@
-import { DocumentType, ProcessedDocument, LineageStage, VerificationStatus } from '../types';
+import { DocumentType, ProcessedDocument, LineageStage, VerificationStatus, ExtractedField } from '../types';
 
 interface ClassificationResult {
   documentType: DocumentType;
@@ -19,7 +19,45 @@ const DOCUMENT_PATTERNS: Array<{ pattern: RegExp; type: DocumentType; confidence
   { pattern: /invoice|inv/i, type: 'Invoice', confidence: 0.85 },
   { pattern: /bank\s*statement|statement/i, type: 'Bank Statement', confidence: 0.8 },
   { pattern: /tax/i, type: 'Tax Document', confidence: 0.6 },
+  // Broaden support for common image/doc formats in naming
+  { pattern: /\.(pdf|tiff?|jpe?g|png)$/i, type: 'Tax Document', confidence: 0.4 }, 
 ];
+
+// Simulated Adaptive Learning Cache
+const LEARNING_CACHE: Record<string, { corrections: number; lastValue: any }> = {};
+
+export function updateModelFromCorrection(fieldId: string, oldValue: any, newValue: any) {
+    // Simulate learning: if a field is corrected, we "learn" 
+    if (!LEARNING_CACHE[fieldId]) {
+        LEARNING_CACHE[fieldId] = { corrections: 0, lastValue: null };
+    }
+    LEARNING_CACHE[fieldId].corrections++;
+    LEARNING_CACHE[fieldId].lastValue = newValue;
+    console.log(`[Adaptive Learning] Updated model for field ${fieldId}. Total corrections: ${LEARNING_CACHE[fieldId].corrections}`);
+}
+
+export function detectAnomalies(fields: ExtractedField[]): string[] {
+    const anomalies: string[] = [];
+    const currentYear = new Date().getFullYear();
+
+    fields.forEach(field => {
+        // 1. Date Check: Future dates
+        if (field.label.toLowerCase().includes('date') && typeof field.value === 'string') {
+            const date = new Date(field.value);
+            if (!isNaN(date.getTime()) && date.getFullYear() > currentYear) {
+                anomalies.push(field.id);
+            }
+        }
+        // 2. High Value Check (Simple Heuristic)
+        if (typeof field.value === 'string' && field.value.startsWith('$')) {
+             const num = parseFloat(field.value.replace(/[^0-9.]/g, ''));
+             if (num > 1000000) { // Flag > $1M
+                 anomalies.push(field.id);
+             }
+        }
+    });
+    return anomalies;
+}
 
 export function classifyDocument(filename: string): ClassificationResult {
   const normalizedName = filename.toLowerCase();
@@ -79,11 +117,12 @@ export function determineVerificationStatus(confidence: number): VerificationSta
 interface CreateDocumentOptions {
   file: File;
   thumbnailUrl?: string;
+  fileUrl?: string;
   rawText?: string;
 }
 
 export async function createProcessedDocument(options: CreateDocumentOptions): Promise<ProcessedDocument> {
-  const { file, thumbnailUrl, rawText } = options;
+  const { file, thumbnailUrl, fileUrl, rawText } = options;
   const classification = classifyDocument(file.name);
 
   const doc: ProcessedDocument = {
@@ -102,6 +141,8 @@ export async function createProcessedDocument(options: CreateDocumentOptions): P
     verificationStatus: determineVerificationStatus(classification.confidence),
     lineageStages: createInitialLineageStages(),
     thumbnailUrl,
+    fileUrl,
+    mimeType: file.type,
     fileSize: getFileSize(file.size),
     rawText,
   };

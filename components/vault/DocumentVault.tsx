@@ -49,7 +49,8 @@ const DocumentVaultInner: React.FC<{
     }
 
     // Create the processed document
-    const doc = await createProcessedDocument({ file, thumbnailUrl });
+    const fileUrl = URL.createObjectURL(file);
+    const doc = await createProcessedDocument({ file, thumbnailUrl, fileUrl });
     return doc;
   }, []);
 
@@ -114,16 +115,16 @@ const DocumentVaultInner: React.FC<{
   }, [selectedDocId, selectedDocument, updateDocument]);
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex bg-chedr-background">
       {/* Main Content */}
       <div className={`flex-1 flex flex-col gap-6 p-6 overflow-y-auto transition-all duration-300 ${selectedDocument ? 'lg:w-1/2' : 'w-full'}`}>
-        {/* Header */}
+        {/* Header - per agent.md typography hierarchy */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-hig-title2 font-semibold text-white/90">
+            <h1 className="text-hig-title2 text-primary">
               Document Vault
             </h1>
-            <p className="text-hig-footnote text-white/50 mt-1">
+            <p className="text-hig-footnote text-tertiary mt-1">
               Upload and manage your tax documents
             </p>
           </div>
@@ -151,9 +152,9 @@ const DocumentVaultInner: React.FC<{
         </div>
       </div>
 
-      {/* Document Detail Slide-Over */}
+      {/* Document Detail Slide-Over - per agent.md: liquid glass for panels */}
       {selectedDocument && (
-        <div className="hidden lg:block w-1/2 border-l border-white/10 h-full animate-in slide-in-from-right duration-300">
+        <div className="hidden lg:block w-1/2 border-l border-white/[0.08] h-full animate-in slide-in-from-right duration-300">
           <DocumentDetail
             document={selectedDocument}
             onClose={handleCloseDetail}
@@ -162,10 +163,10 @@ const DocumentVaultInner: React.FC<{
         </div>
       )}
 
-      {/* Mobile Detail Modal */}
+      {/* Mobile Detail Modal - per agent.md: overlays use liquid glass */}
       {selectedDocument && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm">
-          <div className="absolute inset-x-0 bottom-0 top-16 bg-black border-t border-white/10 rounded-t-3xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm">
+          <div className="absolute inset-x-0 bottom-0 top-16 panel-overlay rounded-t-hig-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
             <DocumentDetail
               document={selectedDocument}
               onClose={handleCloseDetail}
